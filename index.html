@@ -299,16 +299,32 @@ button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 @media(max-width:900px){
   .domains{gap:12px}
   .profile-wrap{gap:18px}
+  .orbit{width:150px;height:150px;margin-bottom:14px}
+  .node.v{transform:translate(0,-58px)}.node.q{transform:translate(58px,0)}
+  .node.n{transform:translate(0,58px)}.node.s{transform:translate(-58px,0)}
+  .hero{padding:24px 0 12px}
+  body.is-testing{overflow:hidden}
+  body.is-testing .app{padding-bottom:max(6px,env(safe-area-inset-bottom));height:calc(100vh - var(--appbar-h));height:calc(100dvh - var(--appbar-h));overflow:hidden}
+  .runner-screen{display:flex;flex-direction:column;height:100%;overflow:hidden}
+  .runner-screen .runner-head{flex:0 0 auto;position:static;background:var(--background)}
+  .runner-screen .qcard{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;margin-top:10px}
+  .runner-screen .runner-foot{flex:0 0 auto;margin-top:8px;padding-bottom:max(6px,env(safe-area-inset-bottom))}
 }
 /* ---- Phones ---- */
 @media(max-width:640px){
   :root{--r-xl:24px}
   .card{padding:20px}
-  .hero{padding:30px 0 18px}
-  .orbit{width:200px;height:200px;margin-bottom:24px}
-  .node.v{transform:translate(0,-80px)}.node.q{transform:translate(80px,0)}
-  .node.n{transform:translate(0,80px)}.node.s{transform:translate(-80px,0)}
-  .domains{grid-template-columns:1fr}
+  .app{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+  .hero{padding:14px 0 8px}
+  .hero h1{font-size:1.75rem}
+  .hero p.lede{display:none}
+  .orbit{display:none}
+  .domains{grid-template-columns:repeat(2,1fr)}
+  .domain{padding:12px 14px;gap:10px}
+  .domain .ic{width:36px;height:36px;border-radius:10px}
+  .domain h4{font-size:.88rem}
+  .domain p{font-size:.78rem}
+  .domain small{display:none}
   .score-row{grid-template-columns:1fr;gap:10px;padding:14px 0}
   .score-nums{text-align:left;display:flex;align-items:baseline;gap:12px}
   .score-nums .sas{font-size:1.3rem}.score-nums .meta{margin-top:0}
@@ -974,6 +990,7 @@ setTimeout(syncAppbarH,0);
 /* ============================ WELCOME ============================ */
 function renderWelcome(){
   stopTimer();
+  document.body.classList.remove('is-testing');
   app.innerHTML=`<div class="screen">
     <section class="hero">
       <div class="orbit" aria-hidden="true">
@@ -1059,6 +1076,7 @@ function buildPlan(){
 /* ============================ BATTERY INTRO ============================ */
 function renderBatteryIntro(bi){
   stopTimer();
+  document.body.classList.remove('is-testing');
   const b=C.STRUCTURE[bi];
   app.innerHTML=`<div class="screen intro">
     <div class="big-ic" style="background:var(${COLORVAR[b.key]})"><span class="material-symbols-rounded">${ICONS[b.key]}</span></div>
@@ -1114,7 +1132,8 @@ function renderQuestion(){
   const pct=Math.round(((state.qi)/total)*100);
   const accent=cssv(COLORVAR[p.battery.key]);
 
-  app.innerHTML=`<div class="screen">
+  document.body.classList.add('is-testing');
+  app.innerHTML=`<div class="screen runner-screen">
     <div class="runner-head">
       <div class="runner-meta">
         <span class="battery-pill" style="background:${accent}">
@@ -1248,6 +1267,7 @@ function profileChart(b,prof){
 }
 
 function renderResults(b,prof,preds){
+  document.body.classList.remove('is-testing');
   const s=state.student;
   const parent=C.parentNarrative(prof,b,s.name);
   const profN=C.profileNarrative(prof,b,s.name);
