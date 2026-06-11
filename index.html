@@ -2,7 +2,10 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FBF8FF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131318" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>CogniCore · CAT4 Cognitive Assessment</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,6 +38,7 @@
   /* shape */
   --r-xs:8px; --r-s:12px; --r-m:16px; --r-l:20px; --r-xl:28px; --r-full:999px;
   --ease:cubic-bezier(.2,0,0,1); --ease-emph:cubic-bezier(.2,0,0,1); --dur:.34s;
+  --appbar-h:66px;
 }
 [data-theme="dark"]{
   --primary:#C0C1FF; --on-primary:#0C107A; --primary-container:#2F379A; --on-primary-container:#E1E0FF;
@@ -50,12 +54,14 @@
   --fig-ink:#E6E4EC; --fig-paper:#26262C; --fig-fold:#34343C;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{
   font-family:"Roboto Flex",system-ui,sans-serif; background:var(--background); color:var(--on-surface);
   font-variation-settings:"opsz" 18; line-height:1.5; -webkit-font-smoothing:antialiased;
   min-height:100vh; transition:background var(--dur) var(--ease), color var(--dur) var(--ease);
+  -webkit-tap-highlight-color:transparent; overflow-x:hidden;
 }
+button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .material-symbols-rounded{font-family:"Material Symbols Rounded";font-weight:normal;font-style:normal;line-height:1;vertical-align:middle;user-select:none}
 /* ============================ TYPE SCALE ============================ */
 .display-l{font-size:clamp(2.6rem,6vw,3.6rem);font-weight:400;font-variation-settings:"opsz" 144;line-height:1.06;letter-spacing:-.5px}
@@ -70,18 +76,21 @@ body{
 .body-m{font-size:.94rem;font-weight:350;line-height:1.55}
 .mono{font-family:"Roboto Mono",monospace}
 /* ============================ LAYOUT ============================ */
-.app{max-width:980px;margin:0 auto;padding:0 20px 96px;position:relative}
-.appbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;
-  padding:14px 20px;background:color-mix(in srgb,var(--background) 86%,transparent);
-  backdrop-filter:blur(14px);border-bottom:1px solid transparent}
+.app{max-width:980px;margin:0 auto;position:relative;
+  padding:0 max(20px,env(safe-area-inset-left)) calc(96px + env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-right))}
+.appbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;min-height:var(--appbar-h);
+  padding:10px max(20px,env(safe-area-inset-left)) 10px max(20px,env(safe-area-inset-right));
+  padding-top:max(10px,env(safe-area-inset-top));
+  background:color-mix(in srgb,var(--background) 86%,transparent);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid transparent}
 .appbar.scrolled{border-color:var(--outline-variant);background:color-mix(in srgb,var(--surface) 92%,transparent)}
 .brand{display:flex;align-items:center;gap:11px;font-weight:600;font-size:1.06rem;letter-spacing:.2px}
-.brand .logo{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;
+.brand .logo{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;flex:0 0 auto;
   background:linear-gradient(135deg,var(--primary),var(--tertiary));color:#fff;box-shadow:0 2px 8px color-mix(in srgb,var(--primary) 40%,transparent)}
 .brand small{color:var(--on-surface-variant);font-weight:400;font-size:.78rem;letter-spacing:.3px}
 .spacer{flex:1}
-.icon-btn{width:44px;height:44px;border:none;background:transparent;border-radius:var(--r-full);color:var(--on-surface-variant);
-  cursor:pointer;display:grid;place-items:center;position:relative;transition:color var(--dur)}
+.icon-btn{width:48px;height:48px;border:none;background:transparent;border-radius:var(--r-full);color:var(--on-surface-variant);
+  cursor:pointer;display:grid;place-items:center;position:relative;transition:color var(--dur);flex:0 0 auto}
 .icon-btn::before{content:"";position:absolute;inset:0;border-radius:inherit;background:currentColor;opacity:0;transition:opacity .2s}
 .icon-btn:hover::before{opacity:.08}.icon-btn:active::before{opacity:.14}
 .icon-btn .material-symbols-rounded{font-size:24px}
@@ -152,7 +161,7 @@ body{
 .seg button.on{background:var(--secondary-container);color:var(--on-secondary-container)}
 .seg button .material-symbols-rounded{font-size:18px}
 /* ============================ TEST RUNNER ============================ */
-.runner-head{position:sticky;top:64px;z-index:20;padding:16px 0 14px;background:var(--background)}
+.runner-head{position:sticky;top:var(--appbar-h);z-index:20;padding:16px 0 14px;background:var(--background)}
 .runner-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .battery-pill{display:inline-flex;align-items:center;gap:8px;padding:7px 15px;border-radius:var(--r-full);
   font-weight:600;font-size:.82rem;color:#fff}
@@ -176,9 +185,9 @@ body{
   border-radius:var(--r-s);background:var(--s-high)}
 .q-num .numbox.q{background:var(--primary-container);color:var(--on-primary-container)}
 .q-figs,.q-matrix{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;padding:14px 0 4px}
-.q-matrix{display:grid;grid-template-columns:repeat(2,86px);gap:10px;justify-content:center;background:var(--s-cont);
+.q-matrix{display:grid;grid-template-columns:repeat(2,clamp(66px,19vw,86px));gap:10px;justify-content:center;background:var(--s-cont);
   width:max-content;margin:8px auto 0;padding:14px;border-radius:var(--r-m)}
-.figcell{width:86px;height:86px;background:var(--fig-paper);border-radius:var(--r-s);display:grid;place-items:center;
+.figcell{width:clamp(66px,19vw,86px);height:clamp(66px,19vw,86px);background:var(--fig-paper);border-radius:var(--r-s);display:grid;place-items:center;
   border:1px solid var(--outline-variant);padding:8px}
 .figcell.q{background:var(--primary-container);border-color:transparent}
 .figcell.q .qmark{font-size:1.8rem;font-weight:600;color:var(--on-primary-container)}
@@ -205,8 +214,8 @@ body{
 .opt.sel .marker{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
 .opt-text{font-size:1.08rem;font-weight:500}
 .opt.fig-opt{flex-direction:column;align-items:center;gap:10px;padding:14px}
-.opt-fig{width:84px;height:84px;display:grid;place-items:center}
-.opt-fig.wide{width:96px;height:96px}
+.opt-fig{width:clamp(58px,15vw,84px);height:clamp(58px,15vw,84px);display:grid;place-items:center}
+.opt-fig.wide{width:clamp(64px,17vw,96px);height:clamp(64px,17vw,96px)}
 .opt.fig-opt .marker{position:absolute;top:10px;left:10px;width:26px;height:26px;font-size:.76rem}
 .runner-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:26px}
 /* ============================ TRANSITIONS / INTRO ============================ */
@@ -277,6 +286,8 @@ body{
 .g-low{background:var(--warn-container);color:#3d2c00}
 [data-theme="dark"] .g-hi{color:#bbf0ae}[data-theme="dark"] .g-low{color:var(--warn-container);background:#4a3500}
 .ptable .ch{color:var(--on-surface-variant);font-size:.86rem}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px}
+.table-scroll .ptable{min-width:440px}
 .note{font-size:.8rem;color:var(--on-surface-variant);background:var(--s-low);padding:14px 16px;border-radius:var(--r-m);margin-top:18px;display:flex;gap:10px}
 .note .material-symbols-rounded{font-size:18px;flex:0 0 auto;margin-top:1px}
 /* misc */
@@ -284,12 +295,52 @@ body{
 .mt8{margin-top:8px}.mt16{margin-top:16px}.mt24{margin-top:24px}
 .row{display:flex;gap:12px;flex-wrap:wrap}
 .hidden{display:none!important}
+/* ---- Tablet ---- */
+@media(max-width:900px){
+  .domains{gap:12px}
+  .profile-wrap{gap:18px}
+}
+/* ---- Phones ---- */
 @media(max-width:640px){
+  :root{--r-xl:24px}
+  .card{padding:20px}
+  .hero{padding:30px 0 18px}
+  .orbit{width:200px;height:200px;margin-bottom:24px}
+  .node.v{transform:translate(0,-80px)}.node.q{transform:translate(80px,0)}
+  .node.n{transform:translate(0,80px)}.node.s{transform:translate(-80px,0)}
   .domains{grid-template-columns:1fr}
-  .score-row{grid-template-columns:1fr;gap:8px}
-  .score-nums{text-align:left}.score-scale{padding-left:0}
-  .q-matrix{grid-template-columns:repeat(2,76px)}
-  .report-head{flex-direction:column;align-items:flex-start}
+  .score-row{grid-template-columns:1fr;gap:10px;padding:14px 0}
+  .score-nums{text-align:left;display:flex;align-items:baseline;gap:12px}
+  .score-nums .sas{font-size:1.3rem}.score-nums .meta{margin-top:0}
+  .score-scale{padding-left:0}
+  .bar-wrap{height:30px}
+  .report-head{flex-direction:column;align-items:stretch;padding:20px;gap:14px}
+  .report-head .mean-badge{align-self:flex-start}
+  .section-title h3{font-size:1.18rem}
+  .options.grid5{grid-template-columns:repeat(3,1fr);gap:10px}
+  .opt{padding:14px 14px;gap:11px}
+  .opt.fig-opt{padding:10px}
+  .opt-text{font-size:1.02rem}
+  .tabs{padding:5px}
+  .tab{min-width:calc(50% - 4px);font-size:.83rem;padding:10px 6px;gap:5px}
+  .btn{height:50px;padding:0 20px;font-size:.92rem}
+  .btn.lg{height:56px;padding:0 26px}
+  .chip-word{padding:9px 15px;font-size:1rem}
+  .q-num .numbox{font-size:1.04rem;padding:9px 12px}
+  .q-words,.q-analogy,.q-num{gap:8px;padding-top:12px}
+  .mean-badge{padding:13px 14px}.mean-badge .v{font-size:1.9rem}
+  .ptable th,.ptable td{padding:9px 9px}
+  .runner-head{padding-top:12px}
+  .runner-meta{flex-wrap:wrap}
+}
+/* ---- Small phones ---- */
+@media(max-width:380px){
+  .app{padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right))}
+  h1.display-s{font-size:1.7rem}
+  .options.grid5{grid-template-columns:repeat(2,1fr)}
+  .tab span.material-symbols-rounded{display:none}
+  .battery-pill{font-size:.78rem}
+  .seg button{font-size:.84rem;gap:4px;padding:0 4px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -911,6 +962,14 @@ themeBtn.addEventListener("click",()=>{
 });
 window.addEventListener("scroll",()=>{document.getElementById("appbar").classList.toggle("scrolled",scrollY>8);});
 const cssv=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+/* keep the sticky runner header aligned under the (variable-height) app bar */
+function syncAppbarH(){
+  const bar=document.getElementById("appbar");
+  if(bar) document.documentElement.style.setProperty("--appbar-h", bar.offsetHeight+"px");
+}
+window.addEventListener("resize",syncAppbarH);
+window.addEventListener("orientationchange",()=>setTimeout(syncAppbarH,200));
+setTimeout(syncAppbarH,0);
 
 /* ============================ WELCOME ============================ */
 function renderWelcome(){
@@ -1242,22 +1301,22 @@ function renderResults(b,prof,preds){
     <div class="tabpane card outlined" data-pane="gcse">
       <h4 class="title-l" style="margin-bottom:6px">Indicative GCSE outcomes</h4>
       <p class="body-m" style="color:var(--on-surface-variant);margin-bottom:14px">Most-likely grade at the end of KS4, with an "if challenged" stretch grade. Derived from the battery profile weighted per subject.</p>
-      <table class="ptable"><thead><tr><th>Subject</th><th>Likely (9–1)</th><th>Letter</th><th>If challenged</th></tr></thead><tbody>
+      <div class="table-scroll"><table class="ptable"><thead><tr><th>Subject</th><th>Likely (9–1)</th><th>Letter</th><th>If challenged</th></tr></thead><tbody>
         ${preds.gcse.map(g=>`<tr><td class="sub">${g.sub}</td>
           <td><span class="grade-chip ${gradeClass(g.likely.grade)}">${g.likely.grade}</span></td>
           <td class="ch">${g.likely.letter}</td>
           <td><span class="grade-chip ${gradeClass(g.challenge.grade)}">${g.challenge.grade}</span> <span class="ch">${g.challenge.letter}</span></td></tr>`).join("")}
-      </tbody></table>
+      </tbody></table></div>
     </div>
 
     <div class="tabpane card outlined" data-pane="ib">
       <h4 class="title-l" style="margin-bottom:6px">IB Middle Years Programme pointers</h4>
       <p class="body-m" style="color:var(--on-surface-variant);margin-bottom:14px">Indicative grade (1–7) at the end of the MYP, with an "if challenged" stretch grade.</p>
-      <table class="ptable"><thead><tr><th>Subject group</th><th>Likely (1–7)</th><th>If challenged</th></tr></thead><tbody>
+      <div class="table-scroll"><table class="ptable"><thead><tr><th>Subject group</th><th>Likely (1–7)</th><th>If challenged</th></tr></thead><tbody>
         ${preds.ib.map(g=>`<tr><td class="sub">${g.sub}</td>
           <td><span class="grade-chip ${gradeClass(g.likely,'ib')}">${g.likely}</span></td>
           <td><span class="grade-chip ${gradeClass(g.challenge,'ib')}">${g.challenge}</span></td></tr>`).join("")}
-      </tbody></table>
+      </tbody></table></div>
     </div>
 
     <p class="note"><span class="material-symbols-rounded">science</span>
