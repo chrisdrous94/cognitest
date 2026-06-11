@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogniCore · CAT4 Cognitive Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0">
+<style>
+/* ============================ MATERIAL 3 TOKENS ============================ */
+:root{
+  /* seed: indigo-violet (intellect) + teal tertiary */
+  --primary:#4A53C2; --on-primary:#FFFFFF; --primary-container:#E1E0FF; --on-primary-container:#070764;
+  --secondary:#5B5D72; --on-secondary:#FFFFFF; --secondary-container:#E0E0F9; --on-secondary-container:#181A2C;
+  --tertiary:#006A6A; --on-tertiary:#FFFFFF; --tertiary-container:#9CF1F0; --on-tertiary-container:#002020;
+  --error:#BA1A1A; --on-error:#FFFFFF; --error-container:#FFDAD6; --on-error-container:#410002;
+  --success:#3A6A33; --success-container:#BBF0AE;
+  --warn:#7D5800; --warn-container:#FFDF9E;
+  --background:#FBF8FF; --on-background:#1B1B21;
+  --surface:#FBF8FF; --on-surface:#1B1B21; --on-surface-variant:#46464F;
+  --surface-dim:#DBD9E0; --surface-bright:#FBF8FF;
+  --s-lowest:#FFFFFF; --s-low:#F5F2FA; --s-cont:#EFEDF4; --s-high:#E9E7EF; --s-highest:#E3E1E9;
+  --outline:#777680; --outline-variant:#C7C5D0;
+  --inverse-surface:#303036; --inverse-on:#F2EFF7; --inverse-primary:#C0C1FF;
+  --shadow:rgba(0,0,0,.28);
+  /* domain accents */
+  --c-verbal:#7A4FB5; --c-verbal-c:#EFDCFF;
+  --c-quant:#1565A8; --c-quant-c:#D4E4FF;
+  --c-nonverbal:#0F7A6B; --c-nonverbal-c:#B9F0E3;
+  --c-spatial:#A1521B; --c-spatial-c:#FFDCC4;
+  /* figures */
+  --fig-ink:#2A2A33; --fig-paper:#FFFFFF; --fig-fold:#ECEAF2;
+  /* shape */
+  --r-xs:8px; --r-s:12px; --r-m:16px; --r-l:20px; --r-xl:28px; --r-full:999px;
+  --ease:cubic-bezier(.2,0,0,1); --ease-emph:cubic-bezier(.2,0,0,1); --dur:.34s;
+}
+[data-theme="dark"]{
+  --primary:#C0C1FF; --on-primary:#0C107A; --primary-container:#2F379A; --on-primary-container:#E1E0FF;
+  --secondary:#C4C4DD; --on-secondary:#2D2F42; --secondary-container:#434559; --on-secondary-container:#E0E0F9;
+  --tertiary:#80D4D3; --on-tertiary:#003736; --tertiary-container:#00504F; --on-tertiary-container:#9CF1F0;
+  --error:#FFB4AB; --error-container:#93000A; --on-error-container:#FFDAD6;
+  --background:#131318; --on-background:#E3E1E9;
+  --surface:#131318; --on-surface:#E3E1E9; --on-surface-variant:#C7C5D0;
+  --surface-dim:#131318; --surface-bright:#39383F;
+  --s-lowest:#0E0E13; --s-low:#1B1B21; --s-cont:#1F1F25; --s-high:#2A292F; --s-highest:#34343A;
+  --outline:#918F9A; --outline-variant:#46464F;
+  --inverse-surface:#E3E1E9; --inverse-on:#303036;
+  --fig-ink:#E6E4EC; --fig-paper:#26262C; --fig-fold:#34343C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:"Roboto Flex",system-ui,sans-serif; background:var(--background); color:var(--on-surface);
+  font-variation-settings:"opsz" 18; line-height:1.5; -webkit-font-smoothing:antialiased;
+  min-height:100vh; transition:background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.material-symbols-rounded{font-family:"Material Symbols Rounded";font-weight:normal;font-style:normal;line-height:1;vertical-align:middle;user-select:none}
+/* ============================ TYPE SCALE ============================ */
+.display-l{font-size:clamp(2.6rem,6vw,3.6rem);font-weight:400;font-variation-settings:"opsz" 144;line-height:1.06;letter-spacing:-.5px}
+.display-s{font-size:clamp(2rem,4.5vw,2.6rem);font-weight:500;font-variation-settings:"opsz" 80;line-height:1.12;letter-spacing:-.3px}
+.headline-m{font-size:1.65rem;font-weight:500;line-height:1.2;font-variation-settings:"opsz" 48}
+.headline-s{font-size:1.35rem;font-weight:500;line-height:1.25}
+.title-l{font-size:1.18rem;font-weight:500;line-height:1.3}
+.title-m{font-size:1rem;font-weight:600;line-height:1.4;letter-spacing:.1px}
+.label-l{font-size:.86rem;font-weight:600;letter-spacing:.5px}
+.label-s{font-size:.72rem;font-weight:600;letter-spacing:.6px;text-transform:uppercase}
+.body-l{font-size:1.04rem;font-weight:350;line-height:1.6}
+.body-m{font-size:.94rem;font-weight:350;line-height:1.55}
+.mono{font-family:"Roboto Mono",monospace}
+/* ============================ LAYOUT ============================ */
+.app{max-width:980px;margin:0 auto;padding:0 20px 96px;position:relative}
+.appbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;
+  padding:14px 20px;background:color-mix(in srgb,var(--background) 86%,transparent);
+  backdrop-filter:blur(14px);border-bottom:1px solid transparent}
+.appbar.scrolled{border-color:var(--outline-variant);background:color-mix(in srgb,var(--surface) 92%,transparent)}
+.brand{display:flex;align-items:center;gap:11px;font-weight:600;font-size:1.06rem;letter-spacing:.2px}
+.brand .logo{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;
+  background:linear-gradient(135deg,var(--primary),var(--tertiary));color:#fff;box-shadow:0 2px 8px color-mix(in srgb,var(--primary) 40%,transparent)}
+.brand small{color:var(--on-surface-variant);font-weight:400;font-size:.78rem;letter-spacing:.3px}
+.spacer{flex:1}
+.icon-btn{width:44px;height:44px;border:none;background:transparent;border-radius:var(--r-full);color:var(--on-surface-variant);
+  cursor:pointer;display:grid;place-items:center;position:relative;transition:color var(--dur)}
+.icon-btn::before{content:"";position:absolute;inset:0;border-radius:inherit;background:currentColor;opacity:0;transition:opacity .2s}
+.icon-btn:hover::before{opacity:.08}.icon-btn:active::before{opacity:.14}
+.icon-btn .material-symbols-rounded{font-size:24px}
+/* ============================ BUTTONS ============================ */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:.95rem;letter-spacing:.2px;
+  padding:0 26px;height:52px;border-radius:var(--r-full);transition:box-shadow .2s,transform .12s;overflow:hidden;white-space:nowrap}
+.btn .material-symbols-rounded{font-size:20px}
+.btn::before{content:"";position:absolute;inset:0;background:currentColor;opacity:0;transition:opacity .2s}
+.btn:hover::before{opacity:.08}.btn:active::before{opacity:.12}
+.btn:active{transform:scale(.985)}
+.btn:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.btn.filled{background:var(--primary);color:var(--on-primary)}
+.btn.tonal{background:var(--secondary-container);color:var(--on-secondary-container)}
+.btn.outlined{background:transparent;color:var(--primary);border:1.5px solid var(--outline)}
+.btn.text{background:transparent;color:var(--primary);padding:0 16px}
+.btn:disabled{opacity:.38;pointer-events:none}
+.btn.lg{height:60px;font-size:1.02rem;padding:0 34px}
+/* ============================ CARDS / SURFACES ============================ */
+.card{background:var(--s-low);border-radius:var(--r-xl);padding:28px}
+.card.outlined{background:var(--surface);border:1px solid var(--outline-variant)}
+.card.elev{background:var(--s-lowest);box-shadow:0 1px 3px var(--shadow),0 1px 2px color-mix(in srgb,var(--shadow) 40%,transparent)}
+.surface-tint{background:var(--s-cont)}
+/* ============================ WELCOME / HERO ============================ */
+.screen{animation:rise .5s var(--ease) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero{padding:48px 0 26px;text-align:center}
+.orbit{width:230px;height:230px;margin:6px auto 30px;position:relative}
+.orbit .core{position:absolute;inset:38%;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,var(--tertiary-container),var(--primary));
+  box-shadow:0 0 44px color-mix(in srgb,var(--primary) 55%,transparent);animation:pulse 3.4s var(--ease) infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.orbit .ring{position:absolute;inset:0;border-radius:50%;border:1.5px dashed var(--outline-variant)}
+.orbit .ring.r2{inset:16%}
+.orbit .node{position:absolute;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
+  top:50%;left:50%;margin:-23px;box-shadow:0 4px 14px var(--shadow);color:#fff}
+.orbit .node .material-symbols-rounded{font-size:24px}
+.orbit-spin{position:absolute;inset:0;animation:spin 26s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.orbit-spin .node{animation:spin 26s linear infinite reverse}
+.node.v{background:var(--c-verbal);transform:translate(0,-94px)}
+.node.q{background:var(--c-quant);transform:translate(94px,0)}
+.node.n{background:var(--c-nonverbal);transform:translate(0,94px)}
+.node.s{background:var(--c-spatial);transform:translate(-94px,0)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--tertiary);font-weight:600;
+  letter-spacing:1.4px;text-transform:uppercase;font-size:.74rem;margin-bottom:14px}
+.eyebrow::before,.eyebrow::after{content:"";width:22px;height:1.5px;background:var(--tertiary);opacity:.5}
+.hero p.lede{max-width:560px;margin:18px auto 0;color:var(--on-surface-variant)}
+/* domain grid */
+.domains{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:34px}
+.domain{display:flex;gap:14px;align-items:flex-start;padding:18px;border-radius:var(--r-l);background:var(--s-low);text-align:left}
+.domain .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:0 0 auto;color:#fff}
+.domain h4{font-size:1rem;font-weight:600;margin-bottom:2px}
+.domain p{font-size:.84rem;color:var(--on-surface-variant)}
+.domain small{display:block;margin-top:6px;font-size:.74rem;color:var(--on-surface-variant);opacity:.8}
+.d-v .ic{background:var(--c-verbal)} .d-q .ic{background:var(--c-quant)}
+.d-n .ic{background:var(--c-nonverbal)} .d-s .ic{background:var(--c-spatial)}
+/* ============================ FORM ============================ */
+.field{position:relative;margin-bottom:18px}
+.field label{display:block;font-size:.8rem;font-weight:600;color:var(--on-surface-variant);margin-bottom:7px;letter-spacing:.2px}
+.field input,.field select{width:100%;height:56px;border-radius:var(--r-xs);border:1.5px solid var(--outline);
+  background:var(--surface);color:var(--on-surface);font-family:inherit;font-size:1rem;padding:0 16px;transition:border-color .2s}
+.field input:focus,.field select:focus{outline:none;border-color:var(--primary);border-width:2px}
+.seg{display:flex;border:1.5px solid var(--outline);border-radius:var(--r-full);overflow:hidden;height:52px}
+.seg button{flex:1;border:none;background:transparent;color:var(--on-surface-variant);font-family:inherit;
+  font-weight:600;cursor:pointer;font-size:.92rem;display:flex;align-items:center;justify-content:center;gap:7px;transition:.2s}
+.seg button+button{border-left:1.5px solid var(--outline)}
+.seg button.on{background:var(--secondary-container);color:var(--on-secondary-container)}
+.seg button .material-symbols-rounded{font-size:18px}
+/* ============================ TEST RUNNER ============================ */
+.runner-head{position:sticky;top:64px;z-index:20;padding:16px 0 14px;background:var(--background)}
+.runner-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.battery-pill{display:inline-flex;align-items:center;gap:8px;padding:7px 15px;border-radius:var(--r-full);
+  font-weight:600;font-size:.82rem;color:#fff}
+.timer{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-variant-numeric:tabular-nums;
+  padding:8px 14px;border-radius:var(--r-full);background:var(--s-high);color:var(--on-surface)}
+.timer .material-symbols-rounded{font-size:18px}
+.timer.warn{background:var(--error-container);color:var(--on-error-container)}
+.progress{height:8px;border-radius:var(--r-full);background:var(--s-highest);overflow:hidden}
+.progress>i{display:block;height:100%;border-radius:inherit;background:var(--primary);transition:width .4s var(--ease)}
+.qcount{font-size:.82rem;color:var(--on-surface-variant);font-weight:500;margin-top:8px}
+.qcard{margin-top:18px;animation:qin .3s var(--ease) both}
+@keyframes qin{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+.q-stem{padding:6px 0 4px}
+.q-instr{color:var(--on-surface-variant);font-size:.95rem;margin-top:14px}
+.q-words,.q-analogy,.q-num{display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:center;padding:18px 0 4px}
+.chip-word{display:inline-flex;align-items:center;padding:11px 20px;border-radius:var(--r-full);
+  background:var(--s-high);font-weight:600;font-size:1.06rem}
+.chip-word.q{background:var(--primary-container);color:var(--on-primary-container)}
+.q-analogy .arrow,.q-analogy .colon{color:var(--on-surface-variant);font-weight:600;font-size:1.15rem}
+.q-num .numbox{font-family:"Roboto Mono",monospace;font-weight:500;font-size:1.18rem;padding:11px 16px;
+  border-radius:var(--r-s);background:var(--s-high)}
+.q-num .numbox.q{background:var(--primary-container);color:var(--on-primary-container)}
+.q-figs,.q-matrix{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;padding:14px 0 4px}
+.q-matrix{display:grid;grid-template-columns:repeat(2,86px);gap:10px;justify-content:center;background:var(--s-cont);
+  width:max-content;margin:8px auto 0;padding:14px;border-radius:var(--r-m)}
+.figcell{width:86px;height:86px;background:var(--fig-paper);border-radius:var(--r-s);display:grid;place-items:center;
+  border:1px solid var(--outline-variant);padding:8px}
+.figcell.q{background:var(--primary-container);border-color:transparent}
+.figcell.q .qmark{font-size:1.8rem;font-weight:600;color:var(--on-primary-container)}
+.figcell.target{width:120px;height:120px}
+.fig{width:100%;height:100%;display:block}
+.q-fold{display:flex;align-items:center;justify-content:center;gap:16px;padding:14px 0 4px}
+.q-fold .figcell{width:120px;height:120px}
+.fold-instr{display:grid;place-items:center;color:var(--on-surface-variant)}
+.fold-instr .material-symbols-rounded{font-size:30px}
+.q-target{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 0 4px}
+.target-label{font-size:.72rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--tertiary)}
+/* options */
+.options{display:grid;gap:12px;margin-top:22px}
+.options.grid5{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+.opt{position:relative;display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:var(--r-m);
+  border:1.5px solid var(--outline-variant);background:var(--surface);cursor:pointer;text-align:left;
+  font-family:inherit;transition:border-color .18s,background .18s;width:100%}
+.opt::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--primary);opacity:0;transition:opacity .18s}
+.opt:hover::before{opacity:.05}
+.opt:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.opt .marker{flex:0 0 auto;width:30px;height:30px;border-radius:50%;border:2px solid var(--outline);
+  display:grid;place-items:center;font-weight:700;font-size:.84rem;color:var(--on-surface-variant);transition:.18s}
+.opt.sel{border-color:var(--primary);background:var(--primary-container)}
+.opt.sel .marker{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.opt-text{font-size:1.08rem;font-weight:500}
+.opt.fig-opt{flex-direction:column;align-items:center;gap:10px;padding:14px}
+.opt-fig{width:84px;height:84px;display:grid;place-items:center}
+.opt-fig.wide{width:96px;height:96px}
+.opt.fig-opt .marker{position:absolute;top:10px;left:10px;width:26px;height:26px;font-size:.76rem}
+.runner-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:26px}
+/* ============================ TRANSITIONS / INTRO ============================ */
+.intro{text-align:center;padding:40px 0}
+.intro .big-ic{width:84px;height:84px;border-radius:24px;display:grid;place-items:center;margin:0 auto 22px;color:#fff}
+.intro .big-ic .material-symbols-rounded{font-size:42px}
+.sub-list{display:grid;gap:10px;max-width:440px;margin:24px auto 0;text-align:left}
+.sub-row{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--s-low);border-radius:var(--r-m)}
+.sub-row .n{width:30px;height:30px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-weight:700;font-size:.84rem;color:var(--on-surface-variant);flex:0 0 auto}
+.sub-row .meta{flex:1}.sub-row .meta b{font-weight:600;font-size:.98rem}.sub-row .meta span{display:block;font-size:.8rem;color:var(--on-surface-variant)}
+/* ============================ RESULTS ============================ */
+.report-head{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;
+  padding:26px;border-radius:var(--r-xl);background:linear-gradient(130deg,var(--primary-container),var(--tertiary-container));margin-bottom:22px}
+.report-head .who h2{font-size:1.5rem;font-weight:600;color:var(--on-primary-container)}
+.report-head .who p{color:var(--on-primary-container);opacity:.85;font-size:.9rem;margin-top:3px}
+.mean-badge{text-align:center;background:var(--s-lowest);border-radius:var(--r-l);padding:16px 26px}
+.mean-badge .v{font-size:2.4rem;font-weight:600;line-height:1;color:var(--primary)}
+.mean-badge .l{font-size:.74rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--on-surface-variant);margin-top:4px}
+.section-title{display:flex;align-items:center;gap:11px;margin:34px 0 16px}
+.section-title .material-symbols-rounded{font-size:24px;color:var(--primary)}
+.section-title h3{font-size:1.3rem;font-weight:600}
+.tabs{display:flex;gap:8px;background:var(--s-cont);padding:6px;border-radius:var(--r-full);margin-bottom:8px;flex-wrap:wrap}
+.tab{flex:1;min-width:120px;border:none;background:transparent;font-family:inherit;font-weight:600;font-size:.9rem;
+  padding:11px 14px;border-radius:var(--r-full);cursor:pointer;color:var(--on-surface-variant);transition:.2s;display:flex;align-items:center;justify-content:center;gap:7px}
+.tab .material-symbols-rounded{font-size:19px}
+.tab.on{background:var(--s-lowest);color:var(--primary);box-shadow:0 1px 3px var(--shadow)}
+.tabpane{display:none;animation:rise .35s var(--ease) both}.tabpane.on{display:block}
+/* score bars */
+.score-row{display:grid;grid-template-columns:130px 1fr auto;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--outline-variant)}
+.score-row:last-child{border-bottom:none}
+.score-row .name{font-weight:600}.score-row .name small{display:block;font-weight:400;font-size:.76rem;color:var(--on-surface-variant)}
+.bar-wrap{position:relative;height:34px}
+.bar-track{position:absolute;top:50%;left:0;right:0;height:8px;transform:translateY(-50%);background:var(--s-highest);border-radius:var(--r-full)}
+.bar-avg{position:absolute;top:50%;transform:translateY(-50%);height:24px;background:color-mix(in srgb,var(--warn-container) 80%,transparent);border-radius:6px}
+.bar-dot{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;transform:translate(-50%,-50%);
+  border:3px solid var(--surface);box-shadow:0 1px 4px var(--shadow);z-index:2}
+.bar-band{position:absolute;top:50%;height:4px;transform:translateY(-50%);border-radius:2px;opacity:.55;z-index:1}
+.score-nums{text-align:right;min-width:118px}
+.score-nums .sas{font-size:1.5rem;font-weight:700;line-height:1}
+.score-nums .meta{font-size:.76rem;color:var(--on-surface-variant);margin-top:3px}
+.score-scale{display:flex;justify-content:space-between;font-size:.7rem;color:var(--on-surface-variant);padding:0 0 0 146px;margin-top:6px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.78rem;color:var(--on-surface-variant);margin-top:14px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+/* profile chart */
+.profile-wrap{display:flex;flex-wrap:wrap;gap:24px;align-items:center}
+.profile-chart{flex:1;min-width:260px}
+.pchart{width:100%;max-width:360px;aspect-ratio:1;margin:0 auto}
+.profile-desc{flex:1;min-width:260px}
+.profile-tag{display:inline-block;padding:8px 16px;border-radius:var(--r-full);background:var(--primary-container);color:var(--on-primary-container);font-weight:600;margin-bottom:14px}
+/* narrative */
+.narrative p{margin-bottom:14px;color:var(--on-surface)}
+.bullets{list-style:none;display:grid;gap:12px;margin-top:6px}
+.bullets li{display:flex;gap:12px;align-items:flex-start}
+.bullets li::before{content:"";flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:var(--primary);margin-top:9px}
+.callout{display:flex;gap:14px;padding:18px;border-radius:var(--r-m);background:var(--tertiary-container);color:var(--on-tertiary-container);margin-top:18px}
+.callout .material-symbols-rounded{font-size:24px;flex:0 0 auto}
+/* prediction table */
+.ptable{width:100%;border-collapse:collapse;margin-top:6px;font-size:.92rem}
+.ptable th{text-align:left;font-size:.74rem;text-transform:uppercase;letter-spacing:.5px;color:var(--on-surface-variant);
+  font-weight:700;padding:10px 12px;border-bottom:1.5px solid var(--outline-variant)}
+.ptable td{padding:11px 12px;border-bottom:1px solid var(--outline-variant)}
+.ptable tr:hover td{background:var(--s-low)}
+.ptable td.sub{font-weight:600}
+.grade-chip{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:30px;padding:0 9px;
+  border-radius:var(--r-xs);font-weight:700;font-size:.9rem}
+.g-hi{background:var(--success-container);color:#16400f}
+.g-mid{background:var(--primary-container);color:var(--on-primary-container)}
+.g-low{background:var(--warn-container);color:#3d2c00}
+[data-theme="dark"] .g-hi{color:#bbf0ae}[data-theme="dark"] .g-low{color:var(--warn-container);background:#4a3500}
+.ptable .ch{color:var(--on-surface-variant);font-size:.86rem}
+.note{font-size:.8rem;color:var(--on-surface-variant);background:var(--s-low);padding:14px 16px;border-radius:var(--r-m);margin-top:18px;display:flex;gap:10px}
+.note .material-symbols-rounded{font-size:18px;flex:0 0 auto;margin-top:1px}
+/* misc */
+.center{text-align:center}
+.mt8{margin-top:8px}.mt16{margin-top:16px}.mt24{margin-top:24px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.hidden{display:none!important}
+@media(max-width:640px){
+  .domains{grid-template-columns:1fr}
+  .score-row{grid-template-columns:1fr;gap:8px}
+  .score-nums{text-align:left}.score-scale{padding-left:0}
+  .q-matrix{grid-template-columns:repeat(2,76px)}
+  .report-head{flex-direction:column;align-items:flex-start}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="appbar" id="appbar">
+  <div class="brand"><span class="logo"><span class="material-symbols-rounded">cognition</span></span>
+    <span>CogniCore<br><small>CAT4 · Cognitive Abilities</small></span></div>
+  <div class="spacer"></div>
+  <button class="icon-btn" id="themeBtn" title="Toggle theme"><span class="material-symbols-rounded">dark_mode</span></button>
+</header>
+<main class="app" id="app"><!-- screens injected here --></main>
+<script>
+/* ============================================================================
+   CogniCore CAT4 — assessment engine, scoring, analysis, predictions
+   Single-file logic. Illustrative norming (synthetic) — see scoring notes.
+   ========================================================================== */
+"use strict";
+
+/* ---------------------------------------------------------------------------
+   1. TEST STRUCTURE (official CAT4 Level F battery layout, per user spec)
+   --------------------------------------------------------------------------- */
+const STRUCTURE = [
+  { key:"verbal", name:"Verbal Reasoning", domain:"Thinking with words", mins:16, color:"verbal",
+    subs:[
+      { key:"vc", name:"Verbal Classification", official:24, mins:8 },
+      { key:"va", name:"Verbal Analogies",      official:24, mins:8 },
+    ]},
+  { key:"quant", name:"Quantitative Reasoning", domain:"Thinking with numbers", mins:18, color:"quant",
+    subs:[
+      { key:"na", name:"Number Analogies", official:18, mins:10 },
+      { key:"ns", name:"Number Series",    official:18, mins:8 },
+    ]},
+  { key:"nonverbal", name:"Non-Verbal Reasoning", domain:"Thinking with shapes", mins:19, color:"nonverbal",
+    subs:[
+      { key:"fc", name:"Figure Classification", official:24, mins:10 },
+      { key:"fm", name:"Figure Matrices",        official:24, mins:9 },
+    ]},
+  { key:"spatial", name:"Spatial Reasoning", domain:"Thinking with shape & space", mins:17, color:"spatial",
+    subs:[
+      { key:"fa", name:"Figure Analysis",     official:18, mins:9 },
+      { key:"fr", name:"Figure Recognition",  official:18, mins:8 },
+    ]},
+];
+
+/* ---------------------------------------------------------------------------
+   2. SVG FIGURE RENDERER  (for non-verbal & spatial items)
+   --------------------------------------------------------------------------- */
+function shapePath(shape, cx, cy, r){
+  const pts=(n,rot)=>{let a=[];for(let i=0;i<n;i++){const t=(-90+rot+i*360/n)*Math.PI/180;a.push([cx+r*Math.cos(t),cy+r*Math.sin(t)]);}return a;};
+  const poly=(a)=>a.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
+  switch(shape){
+    case "circle":   return `<circle cx="${cx}" cy="${cy}" r="${r}"/>`;
+    case "square":   return `<rect x="${cx-r}" y="${cy-r}" width="${2*r}" height="${2*r}" rx="2"/>`;
+    case "triangle": return `<polygon points="${poly(pts(3,0))}"/>`;
+    case "diamond":  return `<polygon points="${poly(pts(4,0))}"/>`;
+    case "pentagon": return `<polygon points="${poly(pts(5,0))}"/>`;
+    case "hexagon":  return `<polygon points="${poly(pts(6,0))}"/>`;
+    case "star": {
+      let a=[];for(let i=0;i<10;i++){const rr=i%2?r*0.45:r;const t=(-90+i*36)*Math.PI/180;a.push([cx+rr*Math.cos(t),cy+rr*Math.sin(t)]);}
+      return `<polygon points="${poly(a)}"/>`;
+    }
+    case "arrowUp": case "arrowDown": {
+      const dir = shape==="arrowUp"? -1: 1;
+      const x=cx, t=cy+dir*r, b=cy-dir*r;
+      return `<polygon points="${x-r*0.8},${b} ${x+r*0.8},${b} ${x+r*0.8},${cy} ${x+r*0.45},${cy} ${x},${t} ${x-r*0.45},${cy} ${x-r*0.8},${cy}"/>`;
+    }
+    default: return `<circle cx="${cx}" cy="${cy}" r="${r}"/>`;
+  }
+}
+// fillStyle returns {attrs, defs}
+let _patCount=0;
+function figureSVG(spec, box=120){
+  spec = Object.assign({shape:"circle",fill:"solid",n:1,rot:0,size:"m"}, spec);
+  const sizeMap={s:0.6,m:0.84,l:1};
+  const baseR = box*0.30*(sizeMap[spec.size]||0.84);
+  const n = spec.n||1;
+  let defs="", body="";
+  const stroke="var(--fig-ink)";
+  let fillAttr, extra="";
+  if(spec.fill==="solid"){ fillAttr=stroke; }
+  else if(spec.fill==="empty"){ fillAttr="none"; }
+  else if(spec.fill==="striped"){
+    const id="stp"+(_patCount++);
+    defs+=`<pattern id="${id}" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="${stroke}" stroke-width="2.4"/></pattern>`;
+    fillAttr=`url(#${id})`;
+  } else if(spec.fill==="dots"){
+    const id="dt"+(_patCount++);
+    defs+=`<pattern id="${id}" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="1.6" fill="${stroke}"/></pattern>`;
+    fillAttr=`url(#${id})`;
+  } else if(spec.fill==="half"){
+    fillAttr=stroke; extra="half";
+  } else { fillAttr=stroke; }
+
+  // layout n shapes in a centred row
+  const positions=[];
+  const gap = n>1 ? Math.min(box*0.42, baseR*1.6) : 0;
+  const startX = box/2 - gap*(n-1)/2;
+  for(let i=0;i<n;i++) positions.push([startX+gap*i, box/2]);
+  const r = n>1 ? baseR*0.62 : baseR;
+
+  positions.forEach(([cx,cy])=>{
+    const path = shapePath(spec.shape, cx, cy, r);
+    body += `<g transform="rotate(${spec.rot} ${cx} ${cy})" fill="${fillAttr}" stroke="${stroke}" stroke-width="2.4" stroke-linejoin="round">${path}</g>`;
+    if(extra==="half"){
+      // overlay a white half (left) to simulate "half filled"
+      body += `<g transform="rotate(${spec.rot} ${cx} ${cy})"><clipPath id="cl${_patCount}"> <rect x="${cx-r}" y="${cy-r}" width="${r}" height="${2*r}"/></clipPath><g clip-path="url(#cl${_patCount})" fill="var(--fig-paper)" stroke="${stroke}" stroke-width="2.4">${shapePath(spec.shape,cx,cy,r)}</g></g>`;
+      _patCount++;
+    }
+  });
+  return `<svg viewBox="0 0 ${box} ${box}" class="fig" role="img">${defs?`<defs>${defs}</defs>`:""}${body}</svg>`;
+}
+
+/* paper-folding (Figure Analysis) renderer ------------------------------------
+   Full unfolded sheet = 4x4 grid. We compute reflected holes from punched ones. */
+function reflectHoles(holes, fold){
+  const set=new Set(holes.map(h=>h[0]+","+h[1]));
+  const add=(r,c)=>set.add(r+","+c);
+  holes.forEach(([r,c])=>{
+    if(fold==="v"||fold==="both") add(r,3-c);
+    if(fold==="h"||fold==="both") add(3-r,c);
+    if(fold==="both") add(3-r,3-c);
+  });
+  return [...set].map(s=>s.split(",").map(Number));
+}
+function gridSheetSVG(holes, box=120, opts={}){
+  const cell=box/4, dot=cell*0.26;
+  let s=`<svg viewBox="0 0 ${box} ${box}" class="fig" role="img">`;
+  s+=`<rect x="3" y="3" width="${box-6}" height="${box-6}" rx="6" fill="var(--fig-paper)" stroke="var(--fig-ink)" stroke-width="2.4"/>`;
+  if(opts.foldLine==="v") s+=`<line x1="${box/2}" y1="3" x2="${box/2}" y2="${box-3}" stroke="var(--fig-ink)" stroke-width="1.4" stroke-dasharray="5 4"/>`;
+  if(opts.foldLine==="h") s+=`<line x1="3" y1="${box/2}" x2="${box-3}" y2="${box/2}" stroke="var(--fig-ink)" stroke-width="1.4" stroke-dasharray="5 4"/>`;
+  if(opts.foldLine==="both"){ s+=`<line x1="${box/2}" y1="3" x2="${box/2}" y2="${box-3}" stroke="var(--fig-ink)" stroke-width="1.4" stroke-dasharray="5 4"/><line x1="3" y1="${box/2}" x2="${box-3}" y2="${box/2}" stroke="var(--fig-ink)" stroke-width="1.4" stroke-dasharray="5 4"/>`; }
+  holes.forEach(([r,c])=>{ const x=cell*c+cell/2, y=cell*r+cell/2; s+=`<circle cx="${x}" cy="${y}" r="${dot}" fill="var(--fig-ink)"/>`; });
+  s+=`</svg>`; return s;
+}
+// folded view: shows only the visible region with crease + punched holes
+function foldedViewSVG(visibleHoles, fold, box=120){
+  // visible region: v -> left half cols 0-1; h -> top half rows 0-1; both -> top-left quad
+  const cell=box/4, dot=cell*0.26;
+  let w=box, h=box, ox=0, oy=0;
+  let s=`<svg viewBox="0 0 ${box} ${box}" class="fig" role="img">`;
+  // draw paper as full but shade the folded-away part
+  s+=`<rect x="3" y="3" width="${box-6}" height="${box-6}" rx="6" fill="var(--fig-paper)" stroke="var(--fig-ink)" stroke-width="2.4"/>`;
+  if(fold==="v"){ s+=`<rect x="${box/2}" y="3" width="${box/2-3}" height="${box-6}" fill="var(--fig-fold)"/>`; s+=`<line x1="${box/2}" y1="3" x2="${box/2}" y2="${box-3}" stroke="var(--fig-ink)" stroke-width="2.2"/>`; }
+  if(fold==="h"){ s+=`<rect x="3" y="${box/2}" width="${box-6}" height="${box/2-3}" fill="var(--fig-fold)"/>`; s+=`<line x1="3" y1="${box/2}" x2="${box-3}" y2="${box/2}" stroke="var(--fig-ink)" stroke-width="2.2"/>`; }
+  if(fold==="both"){ s+=`<rect x="${box/2}" y="3" width="${box/2-3}" height="${box-6}" fill="var(--fig-fold)"/><rect x="3" y="${box/2}" width="${box-6}" height="${box/2-3}" fill="var(--fig-fold)"/><line x1="${box/2}" y1="3" x2="${box/2}" y2="${box-3}" stroke="var(--fig-ink)" stroke-width="2.2"/><line x1="3" y1="${box/2}" x2="${box-3}" y2="${box/2}" stroke="var(--fig-ink)" stroke-width="2.2"/>`; }
+  visibleHoles.forEach(([r,c])=>{ const x=cell*c+cell/2, y=cell*r+cell/2; s+=`<circle cx="${x}" cy="${y}" r="${dot}" fill="var(--fig-ink)" stroke="var(--fig-paper)" stroke-width="1"/>`; });
+  s+=`</svg>`; return s;
+}
+
+/* figure recognition: complex designs (clutter polygons) with embedded target */
+function recogShapeSVG(polys, box=120, target=false){
+  let s=`<svg viewBox="0 0 ${box} ${box}" class="fig" role="img">`;
+  if(target) s+=`<rect x="2" y="2" width="${box-4}" height="${box-4}" fill="none"/>`;
+  polys.forEach(p=>{
+    const pts=p.pts.map(c=>c.join(",")).join(" ");
+    s+=`<polygon points="${pts}" fill="${p.fill||"none"}" stroke="var(--fig-ink)" stroke-width="${p.w||2}" stroke-linejoin="round"/>`;
+  });
+  s+=`</svg>`; return s;
+}
+
+/* ---------------------------------------------------------------------------
+   3. ITEM BANK
+   --------------------------------------------------------------------------- */
+const BANK = {
+  // Verbal Classification: 3 stimulus words, pick the 4th sharing the category
+  vc:[
+    {s:["rain","fog","sunshine"], o:["winter","snow","weather","dark","night"], a:1},
+    {s:["copper","gold","silver"], o:["ring","iron","jewel","shiny","coin"], a:1},
+    {s:["rose","tulip","daisy"], o:["garden","petal","lily","green","stem"], a:2},
+    {s:["apple","banana","cherry"], o:["sweet","grape","tree","red","juice"], a:1},
+    {s:["circle","square","triangle"], o:["round","line","pentagon","corner","angle"], a:2},
+    {s:["run","jog","sprint"], o:["walk","sit","jump","dash","rest"], a:3},
+    {s:["hammer","saw","drill"], o:["wood","nail","screwdriver","build","metal"], a:2},
+    {s:["cat","dog","horse"], o:["bark","lion","pet","fur","wild"], a:1},
+    {s:["Monday","Wednesday","Friday"], o:["week","Sunday","month","day","morning"], a:1},
+    {s:["two","four","six"], o:["odd","eight","number","count","nine"], a:1},
+    {s:["blue","green","yellow"], o:["paint","red","colour","bright","dark"], a:1},
+    {s:["ship","boat","canoe"], o:["sea","water","yacht","sail","float"], a:2},
+  ],
+  // Verbal Analogies: p[0]:p[1] :: q:?
+  va:[
+    {p:["carpet","floor"], q:"curtain", o:["window","shade","hang","drapes","cloth"], a:0},
+    {p:["hot","cold"], q:"up", o:["high","down","lift","top","sky"], a:1},
+    {p:["bird","nest"], q:"bee", o:["honey","fly","hive","sting","flower"], a:2},
+    {p:["glove","hand"], q:"sock", o:["shoe","leg","foot","toe","wear"], a:2},
+    {p:["puppy","dog"], q:"kitten", o:["pet","cat","small","fur","mouse"], a:1},
+    {p:["day","night"], q:"summer", o:["hot","sun","winter","season","warm"], a:2},
+    {p:["author","book"], q:"composer", o:["song","music","note","play","sound"], a:1},
+    {p:["teacher","school"], q:"doctor", o:["nurse","patient","hospital","sick","cure"], a:2},
+    {p:["finger","hand"], q:"petal", o:["stem","leaf","flower","garden","bloom"], a:2},
+    {p:["pen","write"], q:"knife", o:["sharp","cut","blade","kitchen","metal"], a:1},
+    {p:["wheel","car"], q:"wing", o:["fly","bird","plane","sky","feather"], a:2},
+    {p:["cold","freeze"], q:"hot", o:["melt","boil","burn","warm","steam"], a:1},
+  ],
+  // Number Analogies: [a→b][c→d][e→?]
+  na:[
+    {pairs:[[1,2],[5,10],[4]], o:[5,7,8,9,10], a:2},
+    {pairs:[[2,6],[4,12],[5]], o:[10,15,18,20,25], a:1},
+    {pairs:[[3,5],[6,8],[10]], o:[11,12,13,14,15], a:1},
+    {pairs:[[10,5],[8,4],[6]], o:[2,3,4,5,6], a:1},
+    {pairs:[[4,16],[5,25],[6]], o:[30,32,36,42,49], a:2},
+    {pairs:[[1,3],[2,5],[3]], o:[6,7,8,9,10], a:1},
+    {pairs:[[9,3],[16,4],[25]], o:[3,4,5,6,7], a:2},
+    {pairs:[[2,8],[3,12],[4]], o:[12,14,16,18,20], a:2},
+    {pairs:[[7,4],[9,6],[12]], o:[8,9,10,11,12], a:1},
+    {pairs:[[5,10],[7,14],[9]], o:[16,17,18,19,20], a:2},
+    {pairs:[[6,2],[12,4],[18]], o:[3,4,5,6,9], a:3},
+    {pairs:[[1,1],[2,4],[3]], o:[6,7,8,9,12], a:3},
+  ],
+  // Number Series
+  ns:[
+    {seq:[2,4,6,8,10], o:[11,12,14,16,20], a:1},
+    {seq:[1,3,5,7,9], o:[10,11,12,13,14], a:1},
+    {seq:[3,6,12,24], o:[30,36,48,60,72], a:2},
+    {seq:[1,4,9,16], o:[20,24,25,30,36], a:2},
+    {seq:[2,5,11,23], o:[35,40,46,47,48], a:3},
+    {seq:[18,5,17,7,16,9], o:[11,12,13,14,15], a:4},
+    {seq:[100,90,81,73], o:[64,65,66,67,68], a:2},
+    {seq:[1,1,2,3,5,8], o:[11,12,13,14,15], a:2},
+    {seq:[2,6,18,54], o:[108,128,162,216,324], a:2},
+    {seq:[50,45,40,35], o:[25,28,30,32,34], a:2},
+    {seq:[1,2,4,7,11], o:[14,15,16,17,18], a:2},
+    {seq:[81,27,9,3], o:[0,1,2,3,6], a:1},
+  ],
+  // Figure Classification: examples share an attribute; pick option sharing it
+  fc:[
+    {ex:[{shape:"circle",fill:"striped"},{shape:"square",fill:"striped"},{shape:"triangle",fill:"striped"}],
+     o:[{shape:"pentagon",fill:"solid"},{shape:"star",fill:"empty"},{shape:"hexagon",fill:"striped"},{shape:"diamond",fill:"dots"},{shape:"circle",fill:"solid"}], a:2},
+    {ex:[{shape:"triangle",fill:"solid"},{shape:"triangle",fill:"empty"},{shape:"triangle",fill:"striped"}],
+     o:[{shape:"square",fill:"solid"},{shape:"triangle",fill:"dots"},{shape:"circle",fill:"striped"},{shape:"pentagon",fill:"empty"},{shape:"star",fill:"solid"}], a:1},
+    {ex:[{shape:"circle",n:2},{shape:"square",n:2},{shape:"triangle",n:2}],
+     o:[{shape:"star",n:1},{shape:"pentagon",n:3},{shape:"hexagon",n:2},{shape:"diamond",n:4},{shape:"circle",n:1}], a:2},
+    {ex:[{shape:"pentagon",fill:"solid"},{shape:"hexagon",fill:"solid"},{shape:"star",fill:"solid"}],
+     o:[{shape:"triangle",fill:"empty"},{shape:"diamond",fill:"striped"},{shape:"square",fill:"solid"},{shape:"circle",fill:"dots"},{shape:"hexagon",fill:"empty"}], a:2},
+    {ex:[{shape:"diamond",fill:"empty"},{shape:"circle",fill:"empty"},{shape:"hexagon",fill:"empty"}],
+     o:[{shape:"square",fill:"solid"},{shape:"star",fill:"striped"},{shape:"triangle",fill:"empty"},{shape:"pentagon",fill:"dots"},{shape:"circle",fill:"solid"}], a:2},
+    {ex:[{shape:"square",n:3},{shape:"triangle",n:3},{shape:"circle",n:3}],
+     o:[{shape:"star",n:2},{shape:"diamond",n:3},{shape:"hexagon",n:4},{shape:"pentagon",n:1},{shape:"circle",n:2}], a:1},
+    {ex:[{shape:"star",fill:"dots"},{shape:"pentagon",fill:"dots"},{shape:"square",fill:"dots"}],
+     o:[{shape:"circle",fill:"solid"},{shape:"triangle",fill:"striped"},{shape:"hexagon",fill:"dots"},{shape:"diamond",fill:"empty"},{shape:"square",fill:"solid"}], a:2},
+    {ex:[{shape:"hexagon",size:"l",fill:"empty"},{shape:"square",size:"l",fill:"empty"},{shape:"triangle",size:"l",fill:"empty"}],
+     o:[{shape:"circle",size:"s",fill:"empty"},{shape:"pentagon",size:"l",fill:"empty"},{shape:"star",size:"s",fill:"solid"},{shape:"diamond",size:"s",fill:"empty"},{shape:"square",size:"s",fill:"striped"}], a:1},
+  ],
+  // Figure Matrices: tl→tr defines rule; bl→? apply same; options include answer
+  fm:[
+    {tl:{shape:"arrowUp",n:1},tr:{shape:"arrowUp",n:2},bl:{shape:"arrowDown",n:1},
+     o:[{shape:"arrowDown",n:1},{shape:"arrowDown",n:2},{shape:"arrowUp",n:2},{shape:"arrowDown",n:3},{shape:"arrowUp",n:1}], a:1},
+    {tl:{shape:"circle",fill:"empty"},tr:{shape:"circle",fill:"solid"},bl:{shape:"square",fill:"empty"},
+     o:[{shape:"square",fill:"empty"},{shape:"circle",fill:"solid"},{shape:"square",fill:"solid"},{shape:"square",fill:"striped"},{shape:"triangle",fill:"solid"}], a:2},
+    {tl:{shape:"star",size:"s"},tr:{shape:"star",size:"l"},bl:{shape:"hexagon",size:"s"},
+     o:[{shape:"hexagon",size:"s"},{shape:"star",size:"l"},{shape:"hexagon",size:"l"},{shape:"hexagon",size:"m",fill:"empty"},{shape:"pentagon",size:"l"}], a:2},
+    {tl:{shape:"triangle",n:1},tr:{shape:"triangle",n:2},bl:{shape:"diamond",n:1},
+     o:[{shape:"diamond",n:1},{shape:"diamond",n:3},{shape:"diamond",n:2},{shape:"triangle",n:2},{shape:"circle",n:2}], a:2},
+    {tl:{shape:"triangle",rot:0},tr:{shape:"triangle",rot:90},bl:{shape:"triangle",rot:180},
+     o:[{shape:"triangle",rot:0},{shape:"triangle",rot:90},{shape:"triangle",rot:270},{shape:"triangle",rot:180},{shape:"diamond",rot:270}], a:2},
+    {tl:{shape:"square",fill:"solid"},tr:{shape:"square",fill:"striped"},bl:{shape:"circle",fill:"solid"},
+     o:[{shape:"circle",fill:"solid"},{shape:"circle",fill:"empty"},{shape:"circle",fill:"striped"},{shape:"square",fill:"striped"},{shape:"circle",fill:"dots"}], a:2},
+    {tl:{shape:"pentagon",fill:"empty"},tr:{shape:"pentagon",fill:"dots"},bl:{shape:"hexagon",fill:"empty"},
+     o:[{shape:"hexagon",fill:"empty"},{shape:"hexagon",fill:"solid"},{shape:"hexagon",fill:"dots"},{shape:"pentagon",fill:"dots"},{shape:"hexagon",fill:"striped"}], a:2},
+    {tl:{shape:"arrowUp",rot:0},tr:{shape:"arrowUp",rot:180},bl:{shape:"star",rot:0},
+     o:[{shape:"star",rot:0},{shape:"star",rot:36},{shape:"star",rot:180},{shape:"arrowUp",rot:180},{shape:"star",rot:90}], a:2},
+  ],
+  // Figure Analysis (paper folding): fold + punched holes (in visible region) -> unfolded sheet
+  fa:[
+    {fold:"v", visible:[[1,1]],
+     // answer computed by reflection; distractors authored
+     distractors:[ [[1,1]], [[1,1],[2,2]], [[1,0],[1,3]], [[0,1],[0,2]] ]},
+    {fold:"v", visible:[[0,0],[3,1]],
+     distractors:[ [[0,0],[3,1]], [[0,0],[0,3],[3,1]], [[0,1],[3,2]], [[0,0],[3,0],[0,3],[3,3]] ]},
+    {fold:"h", visible:[[0,1],[1,2]],
+     distractors:[ [[0,1],[1,2]], [[0,1],[1,2],[3,1]], [[0,1],[1,2],[2,1]], [[0,2],[1,1]] ]},
+    {fold:"both", visible:[[1,1]],
+     distractors:[ [[1,1]], [[1,1],[2,2]], [[1,1],[1,2],[2,1]], [[0,0],[3,3]] ]},
+    {fold:"v", visible:[[2,1]],
+     distractors:[ [[2,1]], [[1,1],[1,2]], [[2,0],[2,3]], [[0,1],[0,2]] ]},
+  ],
+  // Figure Recognition: a target shape, find which design contains it exactly
+  fr: (function(){
+    // helper to translate a polygon
+    const T=(pts,dx,dy)=>pts.map(p=>[p[0]+dx,p[1]+dy]);
+    const target1=[[20,20],[80,30],[60,80]];           // scalene triangle
+    const target2=[[20,60],[60,20],[90,55],[55,90]];   // irregular quad
+    const target3=[[30,30],[70,30],[80,70],[20,70]];   // trapezoid
+    return [
+      { target:target1,
+        designs:[
+          [ {pts:[[10,10],[100,10],[55,100]]}, {pts:[[15,40],[90,20],[50,95]]} ],
+          [ {pts:T(target1,25,15)}, {pts:[[10,90],[110,90]],w:2}, {pts:[[60,10],[100,80],[20,70]]} ], // contains target (translated) -> idx1
+          [ {pts:[[20,20],[90,30],[55,90]]}, {pts:[[15,60],[100,60]],w:2} ],
+          [ {pts:[[10,50],[60,10],[110,50],[60,110]]} ],
+          [ {pts:[[20,20],[80,20],[80,80],[20,80]]}, {pts:[[20,20],[80,80]],w:2} ],
+        ], a:1 },
+      { target:target2,
+        designs:[
+          [ {pts:[[20,30],[90,20],[100,80],[30,95]]} ],
+          [ {pts:[[10,10],[110,10],[60,110]]} ],
+          [ {pts:T(target2,10,5)}, {pts:[[5,5],[115,115]],w:2} ], // contains -> idx2
+          [ {pts:[[20,60],[60,20],[90,55],[55,90],[20,60]]}, {pts:[[40,40],[80,80]],w:2} ],
+          [ {pts:[[30,30],[90,30],[90,90],[30,90]]} ],
+        ], a:2 },
+      { target:target3,
+        designs:[
+          [ {pts:T(target3,5,12)}, {pts:[[10,100],[110,100]],w:2} ], // contains -> idx0
+          [ {pts:[[30,30],[70,30],[70,70],[30,70]]} ],
+          [ {pts:[[10,40],[100,30],[55,100]]} ],
+          [ {pts:[[30,30],[70,30],[90,70],[10,70]]} ],
+          [ {pts:[[20,20],[100,20],[60,100]]}, {pts:[[20,60],[100,60]],w:2} ],
+        ], a:0 },
+      { target:target1,
+        designs:[
+          [ {pts:[[15,15],[95,15],[55,95]]} ],
+          [ {pts:[[10,10],[110,40],[40,110],[10,60]]} ],
+          [ {pts:[[20,20],[80,30],[60,80]]}, {pts:[[10,90],[110,70]],w:2} ], // exact target -> idx2
+          [ {pts:[[30,20],[90,40],[55,90]]} ],
+          [ {pts:[[20,40],[80,20],[60,90]]} ],
+        ], a:2 },
+      { target:target2,
+        designs:[
+          [ {pts:[[20,20],[90,20],[90,90],[20,90]]} ],
+          [ {pts:T(target2,-5,8)}, {pts:[[60,5],[60,115]],w:2} ], // contains -> idx1
+          [ {pts:[[15,55],[55,15],[95,55],[55,95]]} ],
+          [ {pts:[[20,60],[60,25],[88,55],[50,92]]} ],
+          [ {pts:[[10,10],[100,30],[40,100]]} ],
+        ], a:1 },
+    ];
+  })(),
+};
+
+/* ---------------------------------------------------------------------------
+   4. ITEM RENDERERS (return {stem, options[]})  options are HTML strings
+   --------------------------------------------------------------------------- */
+function buildItem(sub, item){
+  switch(sub){
+    case "vc": return {
+      stem:`<div class="q-words">${item.s.map(w=>`<span class="chip-word">${w}</span>`).join("")}<span class="chip-word q">?</span></div>
+            <p class="q-instr">Which word belongs with the three words above?</p>`,
+      opts:item.o.map(w=>`<span class="opt-text">${w}</span>`)
+    };
+    case "va": return {
+      stem:`<div class="q-analogy"><span class="chip-word">${item.p[0]}</span><span class="arrow">→</span><span class="chip-word">${item.p[1]}</span>
+            <span class="colon">:</span><span class="chip-word">${item.q}</span><span class="arrow">→</span><span class="chip-word q">?</span></div>
+            <p class="q-instr">Complete the second pair in the same way.</p>`,
+      opts:item.o.map(w=>`<span class="opt-text">${w}</span>`)
+    };
+    case "na": {
+      const pr=item.pairs;
+      return {
+        stem:`<div class="q-num">${pr.map((p,i)=>`<span class="numbox">[ ${p[0]} <span class="arrow">→</span> ${p.length>1?p[1]:'?'} ]</span>`).join("")}</div>
+              <p class="q-instr">Find the number that completes the third pair.</p>`,
+        opts:item.o.map(n=>`<span class="opt-text">${n}</span>`)
+      };
+    }
+    case "ns": return {
+      stem:`<div class="q-num">${item.seq.map(n=>`<span class="numbox">${n}</span>`).join("")}<span class="numbox q">?</span></div>
+            <p class="q-instr">What number comes next in the series?</p>`,
+      opts:item.o.map(n=>`<span class="opt-text">${n}</span>`)
+    };
+    case "fc": return {
+      stem:`<div class="q-figs">${item.ex.map(f=>`<div class="figcell">${figureSVG(f)}</div>`).join("")}<div class="figcell q"><span class="qmark">?</span></div></div>
+            <p class="q-instr">Which figure belongs with the set above?</p>`,
+      opts:item.o.map(f=>`<div class="opt-fig">${figureSVG(f,96)}</div>`)
+    };
+    case "fm": return {
+      stem:`<div class="q-matrix"><div class="figcell">${figureSVG(item.tl)}</div><div class="figcell">${figureSVG(item.tr)}</div>
+            <div class="figcell">${figureSVG(item.bl)}</div><div class="figcell q"><span class="qmark">?</span></div></div>
+            <p class="q-instr">Which figure completes the grid?</p>`,
+      opts:item.o.map(f=>`<div class="opt-fig">${figureSVG(f,96)}</div>`)
+    };
+    case "fa": {
+      const ans=reflectHoles(item.visible, item.fold);
+      // build option set: answer + distractors, in fixed positions, then find index
+      const optSets=[ans, ...item.distractors].slice(0,5);
+      // dedupe-ish: ensure 5
+      while(optSets.length<5) optSets.push(item.distractors[0]);
+      // place answer at a stable index but remember it
+      item._answerIndex = 0; // answer first by construction
+      return {
+        stem:`<div class="q-fold"><div class="figcell">${foldedViewSVG(item.visible,item.fold)}</div>
+              <div class="fold-instr"><span class="material-symbols-rounded">content_cut</span></div></div>
+              <p class="q-instr">The folded paper is punched, then unfolded. How will it look?</p>`,
+        opts:optSets.map(h=>`<div class="opt-fig">${gridSheetSVG(h,96)}</div>`),
+        dynAnswer:0
+      };
+    }
+    case "fr": return {
+      stem:`<div class="q-target"><span class="target-label">Target</span><div class="figcell target">${recogShapeSVG([{pts:item.target,w:2.6}],110,true)}</div></div>
+            <p class="q-instr">Which design contains the target shape (same size & orientation)?</p>`,
+      opts:item.designs.map(d=>`<div class="opt-fig wide">${recogShapeSVG(d,110)}</div>`)
+    };
+  }
+}
+function answerOf(sub,item){
+  if(sub==="fa") return 0; // answer placed first
+  return item.a;
+}
+
+/* ---------------------------------------------------------------------------
+   5. SCORING  (illustrative norming — synthetic, monotonic, age-fair shape)
+   --------------------------------------------------------------------------- */
+function normCDF(z){ // Abramowitz-Stegun
+  const t=1/(1+0.2316419*Math.abs(z));
+  const d=0.3989423*Math.exp(-z*z/2);
+  let p=d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));
+  return z>0?1-p:p;
+}
+// proportion correct -> Standard Age Score (mean 100, sd 15), clamped
+function pToSAS(p){
+  const sas = 72 + 56*p + 12*p*p;        // smooth monotonic, p=.5≈103, p=.85≈128
+  return Math.max(69, Math.min(141, Math.round(sas)));
+}
+function sasToNPR(sas){
+  const z=(sas-100)/15;
+  return Math.max(1, Math.min(99, Math.round(normCDF(z)*100)));
+}
+function nprToStanine(npr){
+  // standard stanine percentile bands
+  if(npr<4) return 1; if(npr<11) return 2; if(npr<23) return 3; if(npr<40) return 4;
+  if(npr<60) return 5; if(npr<77) return 6; if(npr<89) return 7; if(npr<96) return 8; return 9;
+}
+function sasBand(sas){
+  if(sas<74) return "Very Low"; if(sas<89) return "Below Average"; if(sas<112) return "Average";
+  if(sas<127) return "Above Average"; return "Very High";
+}
+function scoreBattery(correct,total){
+  const p = total? correct/total : 0;
+  const sas=pToSAS(p), npr=sasToNPR(sas), st=nprToStanine(npr);
+  return {correct,total,p,sas,npr,st,band:sasBand(sas)};
+}
+
+/* profile (verbal vs spatial bias) */
+function profile(verbalSAS, spatialSAS){
+  const d = spatialSAS - verbalSAS; // +ve = spatial bias
+  const mag=Math.abs(d); let level, bias;
+  if(mag<=6){ return {key:"even", label:"Even profile", bias:"none", d}; }
+  if(mag<=12) level="Mild"; else if(mag<=18) level="Moderate"; else level="Extreme";
+  bias = d>0? "spatial":"verbal";
+  return {key:bias, label:`${level} ${bias} bias`, level, bias, d};
+}
+
+/* ---------------------------------------------------------------------------
+   6. PREDICTIONS  (GCSE 9-1 & A*-G, and IB MYP) — driven by the student profile
+   --------------------------------------------------------------------------- */
+// subject -> weighting across batteries [verbal, quant, nonverbal, spatial]
+const SUBJECT_WEIGHTS = {
+  "Mathematics":      [.10,.45,.30,.15],
+  "Physics":          [.12,.38,.30,.20],
+  "Chemistry":        [.18,.34,.28,.20],
+  "Biology":          [.25,.30,.27,.18],
+  "Science (Combined)":[.20,.32,.30,.18],
+  "Geography":        [.30,.18,.22,.30],
+  "History":          [.50,.16,.18,.16],
+  "English Language": [.62,.12,.14,.12],
+  "English Literature":[.64,.10,.14,.12],
+  "Computer Science": [.20,.34,.30,.16],
+  "Design & Technology":[.16,.20,.26,.38],
+  "Art & Design":     [.16,.12,.24,.48],
+  "Modern Languages": [.55,.16,.16,.13],
+  "Business Studies": [.40,.30,.18,.12],
+};
+const IB_SUBJECTS = {
+  "Mathematics":[.10,.45,.30,.15],
+  "Sciences":[.20,.32,.30,.18],
+  "Humanities":[.45,.18,.18,.19],
+  "English (Language & Lit)":[.62,.12,.14,.12],
+  "Language Acquisition":[.55,.16,.16,.13],
+  "Arts":[.16,.12,.24,.48],
+  "Design / Technology":[.16,.20,.26,.38],
+  "Physical Education":[.22,.18,.28,.32],
+};
+function weightedSAS(weights, b){
+  return weights[0]*b.verbal.sas + weights[1]*b.quant.sas + weights[2]*b.nonverbal.sas + weights[3]*b.spatial.sas;
+}
+function sasToGCSE(sas){ // returns {grade, letter}
+  let g,l;
+  if(sas>=128){g="9";l="A*";} else if(sas>=121){g="8";l="A*/A";}
+  else if(sas>=114){g="7";l="A";} else if(sas>=107){g="6";l="B";}
+  else if(sas>=100){g="5";l="B/C";} else if(sas>=93){g="4";l="C";}
+  else if(sas>=86){g="3";l="D";} else if(sas>=79){g="2";l="E/F";}
+  else {g="1";l="G";}
+  return {grade:g,letter:l};
+}
+function sasToGCSEchallenge(sas){ return sasToGCSE(sas+6); } // "if challenged"
+function sasToIB(sas){
+  if(sas>=126) return 7; if(sas>=117) return 6; if(sas>=108) return 5;
+  if(sas>=99) return 4; if(sas>=90) return 3; if(sas>=81) return 2; return 1;
+}
+function buildPredictions(b){
+  const gcse=Object.entries(SUBJECT_WEIGHTS).map(([sub,w])=>{
+    const s=weightedSAS(w,b);
+    return {sub, sas:Math.round(s), likely:sasToGCSE(s), challenge:sasToGCSEchallenge(s)};
+  }).sort((x,y)=>y.sas-x.sas);
+  const ib=Object.entries(IB_SUBJECTS).map(([sub,w])=>{
+    const s=weightedSAS(w,b);
+    return {sub, sas:Math.round(s), likely:sasToIB(s), challenge:sasToIB(s+6)};
+  }).sort((x,y)=>y.sas-x.sas);
+  return {gcse, ib};
+}
+
+/* ---------------------------------------------------------------------------
+   7. NARRATIVE ANALYSIS (parents & teachers) — generated from the profile
+   --------------------------------------------------------------------------- */
+function strengthsList(b){
+  const arr=[["Verbal",b.verbal],["Quantitative",b.quant],["Non-verbal",b.nonverbal],["Spatial",b.spatial]];
+  arr.sort((x,y)=>y[1].sas-x[1].sas);
+  return arr;
+}
+function profileNarrative(prof, b, name){
+  const he = b.sex==="Female"?"she":b.sex==="Male"?"he":"they";
+  const his = b.sex==="Female"?"her":b.sex==="Male"?"his":"their";
+  const Cap = s=>s.charAt(0).toUpperCase()+s.slice(1);
+  if(prof.key==="even"){
+    return {
+      title:"Even profile",
+      bullets:[
+        `${name} shows a balanced profile with no strong preference between verbal and spatial reasoning.`,
+        `${Cap(he)} can access learning through both language-based and visual/practical routes, which gives flexibility across the curriculum.`,
+        `A broad range of teaching approaches will suit ${name}; variety will keep ${his} engaged and stretch all reasoning strands.`,
+        `Where one strand is slightly stronger, lean on it to scaffold the others.`,
+      ]};
+  }
+  const spatial = prof.bias==="spatial";
+  const t = spatial ? {
+    a:`This profile shows a ${prof.level.toLowerCase()} strength in spatial over verbal learning.`,
+    b:`${name} should excel at tasks needing visualisation and will learn quickly with pictures, diagrams, 3D objects, mind-maps and other tangible methods.`,
+    c:`Comparatively, learning purely through written text, extended writing and discussion may be less effective and may need to be supported.`,
+    d:`${Cap(he)} is likely to thrive in active learning — modelling, demonstrating, building and simulating — and should be encouraged to problem-solve and develop ${his} own ideas through these methods.`,
+    e:`Subjects that draw on spatial ability (science, technology, design, geography) play to ${his} strengths; language-led subjects (English, humanities, MFL) will feel more demanding unless approaches are adapted.`,
+  } : {
+    a:`This profile shows a ${prof.level.toLowerCase()} strength in verbal over spatial learning.`,
+    b:`${name} learns well through words — reading, listening, discussion and written explanation — and is likely to articulate ideas clearly.`,
+    c:`Tasks that depend heavily on visualising shapes, rotation or manipulating objects in the mind may feel less natural and benefit from concrete support.`,
+    d:`${Cap(he)} responds to verbal scaffolding: talking through steps, summarising, and writing to learn.`,
+    e:`Language-rich subjects (English, humanities, MFL) play to ${his} strengths; in spatial/practical subjects, pairing diagrams with verbal explanation helps ${him}.`,
+  };
+  return {title:prof.label, bullets:[t.a,t.b,t.c,t.d,t.e]};
+}
+function teacherImplications(prof,b,name){
+  const he=b.sex==="Female"?"she":b.sex==="Male"?"he":"they";
+  const his=b.sex==="Female"?"her":b.sex==="Male"?"his":"their";
+  const out=[];
+  const str=strengthsList(b);
+  out.push(`${name}'s strongest reasoning strand is ${str[0][0]} (SAS ${str[0][1].sas}); the area with most room to develop is ${str[3][0]} (SAS ${str[3][1].sas}).`);
+  if(prof.key!=="even" && prof.bias==="spatial"){
+    out.push(`High spatial reasoners are often "big-picture", intuitive thinkers; watch for a tendency to skip detail, and prompt ${name} to check working and justify steps.`);
+    out.push(`Ask ${name} to verbalise spatial reasoning ("explain how you saw that") — this builds the weaker verbal strand while using a clear strength as the way in.`);
+    out.push(`Pair ${name} with a verbally strong peer for mutual benefit; use visual organisers (flow diagrams, storyboards) before extended writing.`);
+  } else if(prof.key!=="even" && prof.bias==="verbal"){
+    out.push(`Strong verbal reasoning supports comprehension and explanation; ensure ${name} also gets hands-on, visual practice so spatial skills don't lag.`);
+    out.push(`Introduce manipulatives, diagrams and modelling in maths/science so abstract ideas are anchored visually for ${him(b)}.`);
+    out.push(`Use ${his} verbal strength as a bridge: have ${name} narrate diagrams and label visuals to connect words to space.`);
+  } else {
+    out.push(`With an even profile, vary the entry point task-to-task and let ${name} choose verbal or visual routes where possible.`);
+    out.push(`Use ${his} flexibility to model strategies for peers and to stretch into challenge tasks across the curriculum.`);
+  }
+  if(b.verbal.sas<95) out.push(`Verbal reasoning sits in the ${b.verbal.band.toLowerCase()} range — targeted vocabulary, reading comprehension and oracy work will lift attainment in language-dependent subjects.`);
+  if(b.quant.sas>=112) out.push(`Strong quantitative reasoning indicates good potential in maths and the sciences — set stretching, problem-rich tasks.`);
+  return out;
+}
+function him(b){ return b.sex==="Female"?"her":b.sex==="Male"?"him":"them"; }
+
+function parentNarrative(prof,b,name){
+  const he=b.sex==="Female"?"she":b.sex==="Male"?"he":"they";
+  const his=b.sex==="Female"?"her":b.sex==="Male"?"his":"their";
+  const str=strengthsList(b);
+  const mean=b.mean;
+  const lines=[];
+  lines.push(`This assessment looks at how ${name} reasons and solves problems — it is about thinking skills, not how much ${he} has been taught. ${name}'s overall (mean) score is ${mean}, which is in the ${sasBand(mean).toLowerCase()} range compared with other children of the same age nationally.`);
+  lines.push(`${Cap(name)}'s clearest strength is ${str[0][0].toLowerCase()} reasoning. In everyday terms this means ${he} finds it easier to ${strengthEveryday(str[0][0])}. The area where a little more support will help most is ${str[3][0].toLowerCase()} reasoning — ${strengthEveryday(str[3][0])} may take more effort right now.`);
+  if(prof.key!=="even"){
+    lines.push(`${Cap(name)} learns best ${prof.bias==="spatial"?"by seeing and doing — pictures, diagrams, building and hands-on activities":"through words — talking ideas through, reading and explaining"}. At home you can play to this by ${prof.bias==="spatial"?"using visuals, models and real objects to explain new ideas, and encouraging "+his+" to draw or build to show understanding":"discussing what "+he+" is learning, reading together and asking "+him(b)+" to explain ideas back to you"}.`);
+  } else {
+    lines.push(`${Cap(name)} can learn comfortably both by seeing/doing and through words. At home, mix the two: talk ideas through and also use pictures, objects and practical activities.`);
+  }
+  lines.push(`These scores are a snapshot and a starting point, not a ceiling. Reasoning skills grow with practice, encouragement and good teaching — they are a guide for setting ambitious but realistic goals together with ${name}'s teachers.`);
+  return lines;
+}
+function strengthEveryday(strand){
+  return ({
+    "Verbal":"work with words, follow instructions, read and explain ideas",
+    "Quantitative":"work with numbers, spot patterns and reason about quantities",
+    "Non-verbal":"spot patterns in shapes and figures and reason without words",
+    "Spatial":"picture shapes, rotate objects in the mind and think in 3D",
+  })[strand];
+}
+function Cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+/* ---------------------------------------------------------------------------
+   8. EXPORTS to window for the page script
+   --------------------------------------------------------------------------- */
+const CAT = {
+  STRUCTURE, BANK, buildItem, answerOf, figureSVG,
+  scoreBattery, profile, sasBand, sasToNPR, nprToStanine,
+  buildPredictions, profileNarrative, teacherImplications, parentNarrative,
+  strengthsList,
+};
+if(typeof window!=="undefined") window.CAT = CAT;
+if(typeof module!=="undefined") module.exports = CAT;
+
+</script>
+<script>
+/* ============================ CogniCore PAGE / UI ENGINE ============================ */
+(function(){
+const C = window.CAT;
+const app = document.getElementById("app");
+const ICONS = {verbal:"chat",quant:"calculate",nonverbal:"category",spatial:"deployed_code",
+  vc:"chat",va:"compare_arrows",na:"calculate",ns:"trending_up",fc:"category",fm:"grid_view",fa:"content_cut",fr:"search"};
+const COLORVAR = {verbal:"--c-verbal",quant:"--c-quant",nonverbal:"--c-nonverbal",spatial:"--c-spatial"};
+
+let state = { student:null, plan:[], pi:0, qi:0, responses:{}, timer:null, remaining:0 };
+
+/* ---- theme ---- */
+const themeBtn=document.getElementById("themeBtn");
+themeBtn.addEventListener("click",()=>{
+  const cur=document.documentElement.getAttribute("data-theme");
+  const nx=cur==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",nx);
+  themeBtn.querySelector(".material-symbols-rounded").textContent=nx==="dark"?"light_mode":"dark_mode";
+});
+window.addEventListener("scroll",()=>{document.getElementById("appbar").classList.toggle("scrolled",scrollY>8);});
+const cssv=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+/* ============================ WELCOME ============================ */
+function renderWelcome(){
+  stopTimer();
+  app.innerHTML=`<div class="screen">
+    <section class="hero">
+      <div class="orbit" aria-hidden="true">
+        <div class="ring"></div><div class="ring r2"></div>
+        <div class="orbit-spin">
+          <div class="node v"><span class="material-symbols-rounded">chat</span></div>
+          <div class="node q"><span class="material-symbols-rounded">calculate</span></div>
+          <div class="node n"><span class="material-symbols-rounded">category</span></div>
+          <div class="node s"><span class="material-symbols-rounded">deployed_code</span></div>
+        </div>
+        <div class="core"></div>
+      </div>
+      <span class="eyebrow">Cognitive Abilities Test · Level F</span>
+      <h1 class="display-s">Measure how a student <em>reasons</em>,<br>not what they've memorised.</h1>
+      <p class="lede body-l">CogniCore assesses reasoning across four domains, then turns raw performance into Standard Age Scores, percentile ranks, a learning profile, and forward-looking GCSE &amp; IB indicators.</p>
+      <div class="row mt24" style="justify-content:center">
+        <button class="btn filled lg" id="beginBtn"><span class="material-symbols-rounded">play_arrow</span>Begin assessment</button>
+      </div>
+    </section>
+    <div class="domains">
+      ${C.STRUCTURE.map((b,i)=>`<div class="domain d-${['v','q','n','s'][i]}">
+        <div class="ic"><span class="material-symbols-rounded">${ICONS[b.key]}</span></div>
+        <div><h4>${b.name}</h4><p>${b.domain}</p>
+          <small>${b.subs.map(s=>s.name+" · "+s.official+"q").join(" · ")} — ${b.mins} min</small></div>
+      </div>`).join("")}
+    </div>
+    <p class="note mt24"><span class="material-symbols-rounded">info</span>
+      Full CAT4 Level F comprises 168 items across 8 timed sub-tests (~70 min). This interactive build presents a representative, fully-scored item set per sub-test using the same battery structure, timings and standardisation model.</p>
+  </div>`;
+  document.getElementById("beginBtn").onclick=renderForm;
+}
+
+/* ============================ STUDENT FORM ============================ */
+function renderForm(){
+  app.innerHTML=`<div class="screen card" style="max-width:560px;margin:30px auto">
+    <h2 class="headline-s">Student details</h2>
+    <p class="body-m" style="color:var(--on-surface-variant);margin-top:6px;margin-bottom:24px">
+      Age is used to age-standardise scores against the national sample. Nothing is uploaded — everything stays in this browser.</p>
+    <div class="field"><label for="fName">Full name</label><input id="fName" placeholder="e.g. Daniil Molotkov" autocomplete="off"></div>
+    <div class="row"><div class="field" style="flex:1"><label for="fDob">Date of birth</label><input id="fDob" type="date"></div>
+      <div class="field" style="flex:1"><label for="fSchool">School (optional)</label><input id="fSchool" placeholder="School name"></div></div>
+    <div class="field"><label>Sex</label>
+      <div class="seg" id="segSex">
+        <button data-v="Male" class="on"><span class="material-symbols-rounded">male</span>Male</button>
+        <button data-v="Female"><span class="material-symbols-rounded">female</span>Female</button>
+        <button data-v="Other">Prefer not to say</button>
+      </div></div>
+    <div class="row mt16" style="justify-content:space-between">
+      <button class="btn text" id="backBtn"><span class="material-symbols-rounded">arrow_back</span>Back</button>
+      <button class="btn filled" id="toTestBtn">Start first battery<span class="material-symbols-rounded">arrow_forward</span></button>
+    </div>
+    <p id="formErr" class="body-m hidden" style="color:var(--error);margin-top:14px"></p>
+  </div>`;
+  let sex="Male";
+  document.querySelectorAll("#segSex button").forEach(b=>b.onclick=()=>{
+    document.querySelectorAll("#segSex button").forEach(x=>x.classList.remove("on"));b.classList.add("on");sex=b.dataset.v;});
+  document.getElementById("backBtn").onclick=renderWelcome;
+  document.getElementById("toTestBtn").onclick=()=>{
+    const name=document.getElementById("fName").value.trim()||"This student";
+    const dob=document.getElementById("fDob").value;
+    const school=document.getElementById("fSchool").value.trim();
+    let age="—";
+    if(dob){const d=new Date(dob),n=new Date();let y=n.getFullYear()-d.getFullYear();let m=n.getMonth()-d.getMonth();
+      if(n.getDate()<d.getDate())m--;if(m<0){y--;m+=12;}age=y+":"+String(m).padStart(2,"0");}
+    state.student={name,dob,school,sex,age};
+    buildPlan();
+    state.pi=0;state.qi=0;
+    renderBatteryIntro(0);
+  };
+}
+
+function buildPlan(){
+  state.plan=[];
+  state.responses={};
+  C.STRUCTURE.forEach((b,bi)=>{
+    b.subs.forEach((s,si)=>{
+      state.plan.push({battery:b, bi, sub:s, items:C.BANK[s.key]});
+      state.responses[s.key]=new Array(C.BANK[s.key].length).fill(null);
+    });
+  });
+}
+
+/* ============================ BATTERY INTRO ============================ */
+function renderBatteryIntro(bi){
+  stopTimer();
+  const b=C.STRUCTURE[bi];
+  app.innerHTML=`<div class="screen intro">
+    <div class="big-ic" style="background:var(${COLORVAR[b.key]})"><span class="material-symbols-rounded">${ICONS[b.key]}</span></div>
+    <span class="label-s" style="color:var(${COLORVAR[b.key]})">Battery ${bi+1} of 4</span>
+    <h2 class="headline-m mt8">${b.name}</h2>
+    <p class="body-l" style="color:var(--on-surface-variant);max-width:480px;margin:10px auto 0">${b.domain}. Work quickly but carefully — each sub-test is timed. If unsure, make your best choice and move on.</p>
+    <div class="sub-list">
+      ${b.subs.map((s,i)=>`<div class="sub-row"><div class="n">${i+1}</div>
+        <div class="meta"><b>${s.name}</b><span>${C.BANK[s.key].length} questions shown · ${s.mins} minute limit</span></div>
+        <span class="material-symbols-rounded" style="color:var(--on-surface-variant)">${ICONS[s.key]}</span></div>`).join("")}
+    </div>
+    <div class="row mt24" style="justify-content:center">
+      <button class="btn filled lg" id="startBatt"><span class="material-symbols-rounded">timer</span>Start ${b.name}</button>
+    </div>
+  </div>`;
+  // find first plan index for this battery
+  const pi=state.plan.findIndex(p=>p.bi===bi);
+  document.getElementById("startBatt").onclick=()=>{state.pi=pi;state.qi=0;startSubtest();};
+}
+
+/* ============================ SUBTEST RUNNER ============================ */
+function startSubtest(){
+  const p=state.plan[state.pi];
+  state.remaining=p.sub.mins*60;
+  state.qi=0;
+  renderQuestion();
+  startTimer();
+}
+function startTimer(){
+  stopTimer();
+  state.timer=setInterval(()=>{
+    state.remaining--;
+    updateTimerUI();
+    if(state.remaining<=0){ stopTimer(); nextSubtest(); }
+  },1000);
+}
+function stopTimer(){ if(state.timer){clearInterval(state.timer);state.timer=null;} }
+function fmtTime(s){const m=Math.floor(s/60),ss=s%60;return m+":"+String(ss).padStart(2,"0");}
+function updateTimerUI(){
+  const el=document.getElementById("timer");if(!el)return;
+  el.querySelector("span.t").textContent=fmtTime(Math.max(0,state.remaining));
+  el.classList.toggle("warn",state.remaining<=30);
+}
+
+function renderQuestion(){
+  const p=state.plan[state.pi];
+  const items=p.items, item=items[state.qi];
+  const built=C.buildItem(p.sub.key,item);
+  const sel=state.responses[p.sub.key][state.qi];
+  const figType=["fc","fm","fa","fr"].includes(p.sub.key);
+  const total=items.length;
+  const answered=state.responses[p.sub.key].filter(x=>x!==null).length;
+  const pct=Math.round(((state.qi)/total)*100);
+  const accent=cssv(COLORVAR[p.battery.key]);
+
+  app.innerHTML=`<div class="screen">
+    <div class="runner-head">
+      <div class="runner-meta">
+        <span class="battery-pill" style="background:${accent}">
+          <span class="material-symbols-rounded" style="font-size:16px">${ICONS[p.sub.key]}</span>${p.sub.name}</span>
+        <span class="timer" id="timer"><span class="material-symbols-rounded">schedule</span><span class="t">${fmtTime(state.remaining)}</span></span>
+      </div>
+      <div class="progress"><i style="width:${pct}%;background:${accent}"></i></div>
+      <div class="qcount">Question ${state.qi+1} of ${total} · ${p.battery.name} · ${answered} answered</div>
+    </div>
+    <div class="qcard card outlined">
+      <div class="q-stem">${built.stem}</div>
+      <div class="options ${figType?'grid5':''}" id="opts">
+        ${built.opts.map((o,i)=>`<button class="opt ${figType?'fig-opt':''} ${sel===i?'sel':''}" data-i="${i}">
+            <span class="marker">${String.fromCharCode(65+i)}</span>${o}</button>`).join("")}
+      </div>
+    </div>
+    <div class="runner-foot">
+      <button class="btn text" id="prevBtn" ${state.qi===0?'disabled':''}><span class="material-symbols-rounded">arrow_back</span>Previous</button>
+      <button class="btn filled" id="nextBtn">${state.qi===total-1?'Finish sub-test':'Next'}<span class="material-symbols-rounded">arrow_forward</span></button>
+    </div>
+  </div>`;
+  document.querySelectorAll("#opts .opt").forEach(btn=>btn.onclick=()=>{
+    const i=+btn.dataset.i;
+    state.responses[p.sub.key][state.qi]=i;
+    document.querySelectorAll("#opts .opt").forEach(x=>x.classList.remove("sel"));
+    btn.classList.add("sel");
+  });
+  document.getElementById("prevBtn").onclick=()=>{if(state.qi>0){state.qi--;renderQuestion();}};
+  document.getElementById("nextBtn").onclick=()=>{
+    if(state.qi<total-1){state.qi++;renderQuestion();}
+    else nextSubtest();
+  };
+  updateTimerUI();
+}
+
+function nextSubtest(){
+  stopTimer();
+  const cur=state.plan[state.pi];
+  const nextPi=state.pi+1;
+  if(nextPi>=state.plan.length){ return finish(); }
+  const next=state.plan[nextPi];
+  state.pi=nextPi;
+  if(next.bi!==cur.bi){ renderBatteryIntro(next.bi); } // new battery → intro
+  else { startSubtest(); }
+}
+
+/* ============================ SCORING + RESULTS ============================ */
+function computeResults(){
+  const byBattery={};
+  C.STRUCTURE.forEach(b=>{
+    let correct=0,total=0;
+    b.subs.forEach(s=>{
+      const items=C.BANK[s.key], resp=state.responses[s.key];
+      items.forEach((it,idx)=>{ total++; if(resp[idx]===C.answerOf(s.key,it)) correct++; });
+    });
+    byBattery[b.key]=C.scoreBattery(correct,total);
+  });
+  const sasArr=[byBattery.verbal.sas,byBattery.quant.sas,byBattery.nonverbal.sas,byBattery.spatial.sas];
+  const mean=Math.round(sasArr.reduce((a,b)=>a+b,0)/4);
+  const batt={...byBattery, mean, sex:state.student.sex};
+  return batt;
+}
+
+function finish(){
+  stopTimer();
+  const b=computeResults();
+  const prof=C.profile(b.verbal.sas,b.spatial.sas);
+  const preds=C.buildPredictions(b);
+  renderResults(b,prof,preds);
+  scrollTo({top:0,behavior:"smooth"});
+}
+
+function sasToPct(sas){return Math.max(0,Math.min(100,((sas-60)/80)*100));}
+function gradeClass(sasOrGrade,type){
+  if(type==="ib"){return sasOrGrade>=6?"g-hi":sasOrGrade>=4?"g-mid":"g-low";}
+  const g=parseInt(sasOrGrade,10);
+  return g>=7?"g-hi":g>=4?"g-mid":"g-low";
+}
+
+function scoreBars(b){
+  const order=[["verbal","Verbal","Thinking with words"],["quant","Quantitative","Thinking with numbers"],
+    ["nonverbal","Non-verbal","Thinking with shapes"],["spatial","Spatial","Shape & space"]];
+  const avgL=sasToPct(89),avgR=sasToPct(112);
+  return `<div class="card outlined">
+    ${order.map(([k,nm,sub])=>{
+      const s=b[k];const dot=sasToPct(s.sas);const accent=cssv(COLORVAR[k]);
+      const lo=sasToPct(s.sas-4),hi=sasToPct(s.sas+4);
+      return `<div class="score-row">
+        <div class="name">${nm}<small>${sub}</small></div>
+        <div class="bar-wrap">
+          <div class="bar-track"></div>
+          <div class="bar-avg" style="left:${avgL}%;width:${avgR-avgL}%"></div>
+          <div class="bar-band" style="left:${lo}%;width:${hi-lo}%;background:${accent}"></div>
+          <div class="bar-dot" style="left:${dot}%;background:${accent}"></div>
+        </div>
+        <div class="score-nums"><div class="sas">${s.sas}</div>
+          <div class="meta">NPR ${s.npr} · Stanine ${s.st}<br>${s.band}</div></div>
+      </div>`;}).join("")}
+    <div class="score-scale"><span>60</span><span>80</span><span>100</span><span>120</span><span>140</span></div>
+    <div class="legend">
+      <span><i style="background:color-mix(in srgb,var(--warn-container) 80%,transparent)"></i>Average range (SAS 89–112)</span>
+      <span><i style="background:var(--outline)"></i>90% confidence band</span>
+      <span><i style="background:var(--primary)"></i>Standard Age Score</span>
+    </div></div>
+    <div class="row mt16" style="gap:14px">
+      <div class="mean-badge" style="flex:1"><div class="v">${b.mean}</div><div class="l">Mean SAS</div></div>
+      <div class="mean-badge" style="flex:1"><div class="v">${b.nonverbal.npr>=b.spatial.npr?b.nonverbal.npr:b.spatial.npr}</div><div class="l">Top percentile</div></div>
+      <div class="mean-badge" style="flex:1"><div class="v">${C.sasBand(b.mean)}</div><div class="l">Overall band</div></div>
+    </div>`;
+}
+
+function profileChart(b,prof){
+  // x = spatial SAS, y = verbal SAS, range 70-130 mapped to 30..330 in a 360 box
+  const map=v=>30+((Math.max(70,Math.min(130,v))-70)/60)*300;
+  const x=map(b.spatial.sas), y=360-map(b.verbal.sas);
+  const ink=cssv("--on-surface-variant"), grid=cssv("--outline-variant");
+  return `<svg viewBox="0 0 360 360" class="pchart" role="img" aria-label="Verbal versus spatial profile">
+    <defs><linearGradient id="bias" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="var(--c-verbal-c)"/><stop offset=".5" stop-color="var(--s-cont)"/><stop offset="1" stop-color="var(--c-spatial-c)"/>
+    </linearGradient></defs>
+    <rect x="30" y="30" width="300" height="300" rx="14" fill="url(#bias)" opacity=".6"/>
+    <line x1="30" y1="330" x2="330" y2="30" stroke="${grid}" stroke-width="1.5" stroke-dasharray="5 5"/>
+    ${[90,100,110,120].map(v=>`<line x1="${map(v)}" y1="30" x2="${map(v)}" y2="330" stroke="${grid}" stroke-width=".6"/>
+      <line x1="30" y1="${360-map(v)}" x2="330" y2="${360-map(v)}" stroke="${grid}" stroke-width=".6"/>`).join("")}
+    <rect x="30" y="30" width="300" height="300" rx="14" fill="none" stroke="${grid}" stroke-width="1.5"/>
+    <text x="180" y="352" text-anchor="middle" fill="${ink}" font-size="12" font-family="Roboto Flex">Spatial SAS →</text>
+    <text x="14" y="180" text-anchor="middle" fill="${ink}" font-size="12" font-family="Roboto Flex" transform="rotate(-90 14 180)">Verbal SAS →</text>
+    <circle cx="${x}" cy="${y}" r="11" fill="var(--primary)" stroke="var(--surface)" stroke-width="3"/>
+    <text x="${x}" y="${y-18}" text-anchor="middle" fill="var(--primary)" font-size="11" font-weight="700" font-family="Roboto Flex">${state.student.name.split(" ")[0]}</text>
+  </svg>`;
+}
+
+function renderResults(b,prof,preds){
+  const s=state.student;
+  const parent=C.parentNarrative(prof,b,s.name);
+  const profN=C.profileNarrative(prof,b,s.name);
+  const teach=C.teacherImplications(prof,b,s.name);
+  const str=C.strengthsList(b);
+
+  app.innerHTML=`<div class="screen">
+    <div class="report-head">
+      <div class="who"><span class="label-s" style="color:var(--on-primary-container)">CAT4 Individual Report</span>
+        <h2>${s.name}</h2>
+        <p>${s.school?s.school+" · ":""}Age ${s.age} · ${s.sex} · Level F · ${new Date().toLocaleDateString('en-GB')}</p></div>
+      <div class="mean-badge"><div class="v">${b.mean}</div><div class="l">Mean SAS</div></div>
+    </div>
+
+    <div class="section-title"><span class="material-symbols-rounded">bar_chart</span><h3>Battery scores</h3></div>
+    ${scoreBars(b)}
+
+    <div class="section-title"><span class="material-symbols-rounded">tune</span><h3>Learning profile</h3></div>
+    <div class="card outlined"><div class="profile-wrap">
+      <div class="profile-chart">${profileChart(b,prof)}</div>
+      <div class="profile-desc">
+        <span class="profile-tag">${profN.title}</span>
+        <ul class="bullets">${profN.bullets.map(x=>`<li>${x}</li>`).join("")}</ul>
+      </div>
+    </div></div>
+
+    <div class="section-title"><span class="material-symbols-rounded">description</span><h3>Detailed analysis</h3></div>
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-t="parent"><span class="material-symbols-rounded">family_restroom</span>For parents</button>
+      <button class="tab" data-t="teacher"><span class="material-symbols-rounded">school</span>For teachers</button>
+      <button class="tab" data-t="gcse"><span class="material-symbols-rounded">trending_up</span>GCSE predictions</button>
+      <button class="tab" data-t="ib"><span class="material-symbols-rounded">public</span>IB MYP</button>
+    </div>
+
+    <div class="tabpane on card outlined" data-pane="parent">
+      <h4 class="title-l" style="margin-bottom:14px">What these results mean for ${s.name.split(" ")[0]}</h4>
+      <div class="narrative">${parent.map(p=>`<p class="body-l">${p}</p>`).join("")}</div>
+      <div class="callout"><span class="material-symbols-rounded">lightbulb</span>
+        <div><b>Strongest area:</b> ${str[0][0]} reasoning (SAS ${str[0][1].sas}, ${str[0][1].band}). 
+        <b>Best to support:</b> ${str[3][0]} reasoning (SAS ${str[3][1].sas}). Reasoning grows with practice — these are a starting point, not a limit.</div></div>
+    </div>
+
+    <div class="tabpane card outlined" data-pane="teacher">
+      <h4 class="title-l" style="margin-bottom:14px">Implications for teaching &amp; learning</h4>
+      <ul class="bullets">${teach.map(t=>`<li>${t}</li>`).join("")}</ul>
+      <div class="callout" style="background:var(--secondary-container);color:var(--on-secondary-container)">
+        <span class="material-symbols-rounded">target</span>
+        <div><b>Target-setting:</b> Use the SAS as the benchmark and the "if challenged" grades below as stretch targets. Triangulate with teacher assessment and attainment data before finalising goals.</div></div>
+    </div>
+
+    <div class="tabpane card outlined" data-pane="gcse">
+      <h4 class="title-l" style="margin-bottom:6px">Indicative GCSE outcomes</h4>
+      <p class="body-m" style="color:var(--on-surface-variant);margin-bottom:14px">Most-likely grade at the end of KS4, with an "if challenged" stretch grade. Derived from the battery profile weighted per subject.</p>
+      <table class="ptable"><thead><tr><th>Subject</th><th>Likely (9–1)</th><th>Letter</th><th>If challenged</th></tr></thead><tbody>
+        ${preds.gcse.map(g=>`<tr><td class="sub">${g.sub}</td>
+          <td><span class="grade-chip ${gradeClass(g.likely.grade)}">${g.likely.grade}</span></td>
+          <td class="ch">${g.likely.letter}</td>
+          <td><span class="grade-chip ${gradeClass(g.challenge.grade)}">${g.challenge.grade}</span> <span class="ch">${g.challenge.letter}</span></td></tr>`).join("")}
+      </tbody></table>
+    </div>
+
+    <div class="tabpane card outlined" data-pane="ib">
+      <h4 class="title-l" style="margin-bottom:6px">IB Middle Years Programme pointers</h4>
+      <p class="body-m" style="color:var(--on-surface-variant);margin-bottom:14px">Indicative grade (1–7) at the end of the MYP, with an "if challenged" stretch grade.</p>
+      <table class="ptable"><thead><tr><th>Subject group</th><th>Likely (1–7)</th><th>If challenged</th></tr></thead><tbody>
+        ${preds.ib.map(g=>`<tr><td class="sub">${g.sub}</td>
+          <td><span class="grade-chip ${gradeClass(g.likely,'ib')}">${g.likely}</span></td>
+          <td><span class="grade-chip ${gradeClass(g.challenge,'ib')}">${g.challenge}</span></td></tr>`).join("")}
+      </tbody></table>
+    </div>
+
+    <p class="note"><span class="material-symbols-rounded">science</span>
+      Scores use an illustrative standardisation model (SAS mean 100, SD 15) for demonstration. A production deployment calibrates an Item Response Theory item bank against a representative norming sample. Predictions are statistical indicators of potential, not guarantees, and should be read alongside teacher assessment and attainment data.</p>
+
+    <div class="row mt24" style="justify-content:center;gap:12px">
+      <button class="btn outlined" id="printBtn"><span class="material-symbols-rounded">print</span>Print / Save PDF</button>
+      <button class="btn filled" id="againBtn"><span class="material-symbols-rounded">restart_alt</span>New assessment</button>
+    </div>
+  </div>`;
+
+  document.querySelectorAll("#tabs .tab").forEach(t=>t.onclick=()=>{
+    document.querySelectorAll("#tabs .tab").forEach(x=>x.classList.remove("on"));t.classList.add("on");
+    document.querySelectorAll(".tabpane").forEach(p=>p.classList.toggle("on",p.dataset.pane===t.dataset.t));
+    scrollTo({top:document.querySelector(".tabs").offsetTop-80,behavior:"smooth"});
+  });
+  document.getElementById("printBtn").onclick=()=>{
+    document.querySelectorAll(".tabpane").forEach(p=>p.classList.add("on"));window.print();
+  };
+  document.getElementById("againBtn").onclick=()=>{state={student:null,plan:[],pi:0,qi:0,responses:{},timer:null,remaining:0};renderWelcome();};
+}
+
+/* boot */
+renderWelcome();
+})();
+
+</script>
+</body>
+</html>
